@@ -184,7 +184,7 @@ module DE2_115(
 
 	logic clk3000;
 	logic clk_30;
-	logic game_over;
+	//logic game_over;
 
 	ps2_controller ps21(
 		.clk(clk_30),
@@ -261,6 +261,7 @@ module DE2_115(
 		.bomb_max_2(p2_bomb_cap),
 		.bomb_num_1(bomb_num_1_in),
 		.bomb_num_2(bomb_num_2_in),
+		.bomb_wall_in(bomb_wall),
 
 		.p1_set_bomb(p1_put),
 		.p2_set_bomb(p2_put),
@@ -345,6 +346,8 @@ module DE2_115(
 	logic [3:0] bomb_p1_o;
 	logic p2_able;
 	logic [3:0] p1_put_ctr_display;
+	logic [1:0] game_state;
+	logic [255:0] bomb_wall;
 
 	Picture_Output picture_output(
 		.clk(CLOCK_50),
@@ -376,7 +379,8 @@ module DE2_115(
 		.display4(bomb_display4),
 		.bomb_p1_ctr_0(bomb_p1_ctr_0),
 		.bomb_p1_o(bomb_p1_o),
-		.p1_put_ctr(p1_put_ctr_display)
+		.p1_put_ctr(p1_put_ctr_display),
+		.bomb_un_grid(bomb_wall)
 		);
 
 	// assign LEDR[2] = bomb_display1;
@@ -418,21 +422,16 @@ module DE2_115(
 		.p2_able_to_add_bomb(p2_able)
 		);
 
-	// Grid Grid (
-	// 	.clk(clk_30),    // Clock
-	// 	.rst_n(~SW[0]),  // Asynchronous reset active low
-	// 	.p1_set(p1_set_o), //player 1 set bomb
-	// 	.p2_set(p2_set_o), //player 2 set bomb
-	// 	.p1_cor(p1_coordinate_display), 
-	// 	.p2_cor(p2_coordinate_display),
-	// 	.occ_grid(StateArray),
-	// 	.wall_grid_out(wall),
-	// 	.p1_bomb_cap_out(bomb_max_1_in),
-	// 	.p2_bomb_cap_out(bomb_max_2_in),
-	// 	.p1_bomb_unexp_num_out(bomb_num_1_in),
-	// 	.p2_bomb_unexp_num_out(bomb_num_2_in),
-	// 	.game_over(game_over)
-	// );
+	Gameover game_over(
+		.clk(clk_30),
+		.reset(SW[0]),
+		.i_explode(explode),
+		.p1_cor(p1_cor),
+		.p2_cor(p2_cor),
+		//state
+		.gameover_state(game_state)
+
+		); 
 	
 	color_mapper  color_mapper ( 
 		.clk(CLOCK_50),
@@ -446,7 +445,8 @@ module DE2_115(
         .DrawY(drawY),    
         .VGA_R(vga_r),
         .VGA_G(vga_g), 
-        .VGA_B(vga_b) 
+        .VGA_B(vga_b),
+        .gameStatus(game_state) 
     );
 
     VGA_controller vga_controller(
@@ -492,19 +492,19 @@ module DE2_115(
 	);
 
 	SevenHexDecoder seven_dec1(
-		.i_hex(bomb_num_1_in),
+		.i_hex(p1_bomb_len),
 		.o_seven_ten(HEX3),
 		.o_seven_one(HEX2)
 	);
 
 	SevenHexDecoder seven_dec2(
-		.i_hex(p1_put_ctr_display),
+		.i_hex(p2_bomb_cap),
 		.o_seven_ten(HEX5),
 		.o_seven_one(HEX4)
 	);
 
 	SevenHexDecoder seven_dec3(
-		.i_hex(p1_bomb_len),
+		.i_hex(p2_bomb_len),
 		.o_seven_ten(HEX7),
 		.o_seven_one(HEX6)
 	);

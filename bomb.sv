@@ -17,7 +17,8 @@ module bomb(
 	output display4,
 	output [5:0] bomb_p1_ctr_0,
 	output [3:0] bomb_p1_o,
-	output logic [3:0] p1_put_ctr
+	output logic [3:0] p1_put_ctr,
+	output logic [255:0] bomb_un_grid
 );	
 
 // states
@@ -43,7 +44,7 @@ parameter P2_WIN 	= 2'd3;
 // integers
 integer ii, i, i2, i3, i4, i5, i6, i7, i8;
 integer i9, i10;
-integer i11;
+integer i11, i12;
 
 logic [2:0] bomb_tile_next [0:255];
 logic [2:0] bomb_tile_prev_r [0:255];
@@ -129,6 +130,15 @@ assign display4 = display_r4;
 	end
 
 	always_comb begin 
+
+		for(i12 = 0; i12 < 256 ; i12 = i12 + 1) begin 
+			bomb_un_grid[i12] = 0;
+			if(bomb_tile[i12] == BOMB_UN) bomb_un_grid[i12] = 1;
+		end
+	end
+
+	always_comb begin 
+		p1_put_ctr_next = p1_put_ctr;
 		if(p1_put) begin
 			if(p1_put_ctr < 15) begin
 				p1_put_ctr_next = p1_put_ctr + 1;
@@ -259,7 +269,7 @@ assign display4 = display_r4;
 
 			// explode animation display for one seconds
 			if(bomb_tile[i] >= EXP_UP) begin
-				if(bomb_ctr[i] >= 6'd30) begin
+				if(bomb_ctr[i] >= 6'd17) begin
 					bomb_tile_next[i] = EMPTY;
 					bomb_ctr_next[i] = 0;
 					if(i == 4) begin 
