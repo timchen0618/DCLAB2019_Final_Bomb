@@ -186,17 +186,15 @@ module controller
         
     end 
 
-<<<<<<< HEAD
-=======
-    always @* begin
-        if(o_ctr_r < 3'd5) begin
-            o_ctr_w = o_ctr_r + 1;
-        end
-        else begin
-            o_ctr_w = 0;
-        end  
-    end 
->>>>>>> 070965d6d990280d69b861ed19375ca304f453b0
+    // always @* begin
+    //     if(o_ctr_r < 3'd5) begin
+    //         o_ctr_w = o_ctr_r + 1;
+    //     end
+    //     else begin
+    //         o_ctr_w = 0;
+    //     end  
+    // end 
+
 
     // always @* begin
     //     bomb_max_1_w = bomb_max_1_r;
@@ -223,7 +221,6 @@ module controller
         end
     end 
 
-<<<<<<< HEAD
     // always @* begin 
     //     p1_x_w5         = p1_x_r5;
     //     p2_x_w5         = p2_x_r5;
@@ -231,26 +228,16 @@ module controller
     //     p2_y_w5         = p2_y_r5;
     //     p1_set_bomb_w5  = 0;
     //     p2_set_bomb_w5  = 0;
-=======
-    always @* begin 
-        p1_x_w5         = p1_x_r5;
-        p2_x_w5         = p2_x_r5;
-        p1_y_w5         = p1_y_r5;
-        p2_y_w5         = p2_y_r5;
-        p1_set_bomb_w5  = 0;
-        p2_set_bomb_w5  = 0;
 
-        if(o_ctr_r == 3'd3) begin 
-            p1_x_w5         = p1_x_r;
-            p2_x_w5         = p2_x_r;
-            p1_y_w5         = p1_y_r;
-            p2_y_w5         = p2_y_r;
-            p1_set_bomb_w5  = p1_set_bomb_r;
-            p2_set_bomb_w5  = p2_set_bomb_r;
-        end
->>>>>>> 070965d6d990280d69b861ed19375ca304f453b0
+    // always @* begin 
+    //     p1_x_w5         = p1_x_r5;
+    //     p2_x_w5         = p2_x_r5;
+    //     p1_y_w5         = p1_y_r5;
+    //     p2_y_w5         = p2_y_r5;
+    //     p1_set_bomb_w5  = 0;
+    //     p2_set_bomb_w5  = 0;
 
-    //     if(o_ctr_r == 3'd2) begin 
+    //     if(o_ctr_r == 3'd3) begin 
     //         p1_x_w5         = p1_x_r;
     //         p2_x_w5         = p2_x_r;
     //         p1_y_w5         = p1_y_r;
@@ -259,22 +246,31 @@ module controller
     //         p2_set_bomb_w5  = p2_set_bomb_r;
     //     end
 
+    // //     if(o_ctr_r == 3'd2) begin 
+    // //         p1_x_w5         = p1_x_r;
+    // //         p2_x_w5         = p2_x_r;
+    // //         p1_y_w5         = p1_y_r;
+    // //         p2_y_w5         = p2_y_r;
+    // //         p1_set_bomb_w5  = p1_set_bomb_r;
+    // //         p2_set_bomb_w5  = p2_set_bomb_r;
+    // //     end
+
     // end 
 
     //consider set bomb or not
     //update coordinate
     always @* begin
-<<<<<<< HEAD
+
         p1_set_bomb_w   = 0;
         p2_set_bomb_w   = 0; 
-=======
+
         p1_set_bomb_w   = p1_set_bomb_r;
         p2_set_bomb_w   = p2_set_bomb_r;
-        if(o_ctr_r == 3) begin
-            p1_set_bomb_w = 0;
-            p2_set_bomb_w = 0;
-        end 
->>>>>>> 070965d6d990280d69b861ed19375ca304f453b0
+        // if(o_ctr_r == 3) begin
+        //     p1_set_bomb_w = 0;
+        //     p2_set_bomb_w = 0;
+        // end 
+
         // p1_bomb_num_w   = p1_bomb_num_r;
         // p2_bomb_num_w   = p2_bomb_num_r;
         p1_x_w          = p1_x_r;
