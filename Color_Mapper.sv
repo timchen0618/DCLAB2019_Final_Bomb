@@ -224,13 +224,13 @@ module  color_mapper ( input        clk,
                         case (color_out)
                             0: begin 
                                 Red_next = 8'haa;
-                                Green_next = 8'hc8;
-                                Blue_next = 8'h2f;
+                                Green_next = 8'hea;
+                                Blue_next = 8'h66;
                             end
                             1: begin 
                                 Red_next = 8'haa;
-                                Green_next = 8'hc8;
-                                Blue_next = 8'h2f;
+                                Green_next = 8'hea;
+                                Blue_next = 8'h66;
                             end
                             2: begin 
                                 Red_next = 8'h3C;
