@@ -147,20 +147,18 @@ assign display4 = display_r4;
 	end
 
 	always_comb begin   // determine P1 WIN or P2 WIN and GAMEOVER or not
-		for(i10 = 0; i10 < 256 ; i10 = i10 + 1) begin
-			p1_win_nxt = p1_win;
-			p2_win_nxt = p2_win;
-			gameover_next = gameover;
-			if(bomb_tile[i10] >= EXP_UP && i10 == p1_cor) begin 
-				p2_win_nxt = 1;
-				gameover = 1;
-			end
-				
-			else if(bomb_tile[i10] >= EXP_UP && i10 == p2_cor) begin 
-				p1_win_nxt = 1;
-				gameover = 1;
-			end 
+		p1_win_nxt = p1_win;
+		p2_win_nxt = p2_win;
+		gameover_next = gameover;
+		if(bomb_tile[p1_cor] >= EXP_UP) begin 
+			p2_win_nxt = 1;
+			gameover_next = 1;
 		end
+				
+		if(bomb_tile[p2_cor] >= EXP_UP) begin 
+			p1_win_nxt = 1;
+			gameover_next = 1;
+		end 
 		
 		// GAME_OVER_COUNTER
 		gameover_ctr_next = gameover_ctr;
@@ -300,7 +298,7 @@ assign display4 = display_r4;
 			if(bomb_tile[i] == EXP_CEN) begin
 				if(bomb_put_by_which[i] == P1) begin
 					case(p1_bomb_len) 
-						0: begin
+						2'd0: begin
 							if((i+1) % 16 != 0) begin 
 								bomb_tile_next[i+1] = EXP_RIGHT; 	// not the rightmost column
 								//display_w1 = 1;
@@ -319,7 +317,7 @@ assign display4 = display_r4;
 							end 
 							
 						end	
-						1: begin
+						2'd1: begin
 							if((i+1) % 16 != 0) 				bomb_tile_next[i+1] = EXP_RIGHT; 	// not the rightmost column
 							if(i % 16 != 15 && i % 16 != 14) 	bomb_tile_next[i+2] = EXP_RIGHT;	// not the rightmost two columns
 							if(i % 16 != 0) 					bomb_tile_next[i-1] = EXP_LEFT;  	// not the leftmost column
@@ -329,7 +327,7 @@ assign display4 = display_r4;
 							if(i < 240)							bomb_tile_next[i+16] = EXP_DOWN; 	// not the last row
 							if(i < 224)							bomb_tile_next[i+32] = EXP_DOWN; 	// not the last two rows	  
 						end	
-						2: begin
+						2'd2: begin
 							if((i+1) % 16 != 0) 								bomb_tile_next[i+1] = EXP_RIGHT; 	// not the rightmost column
 							if(i % 16 != 15 && i % 16 != 14) 					bomb_tile_next[i+2] = EXP_RIGHT;	// not the rightmost two columns
 							if(i % 16 != 15 && i % 16 != 14 && i % 16 != 13) 	bomb_tile_next[i+3] = EXP_RIGHT;	// not the rightmost three columns
@@ -343,7 +341,7 @@ assign display4 = display_r4;
 							if(i < 224)											bomb_tile_next[i+32] = EXP_DOWN; 	// not the last two rows
 							if(i < 208)											bomb_tile_next[i+48] = EXP_DOWN; 	// not the last three rows
 						end	
-						3: begin
+						2'd3: begin
 							if((i+1) % 16 != 0) 												bomb_tile_next[i+1] = EXP_RIGHT; 	// not the rightmost column
 							if(i % 16 != 15 && i % 16 != 14) 									bomb_tile_next[i+2] = EXP_RIGHT;	// not the rightmost two columns
 							if(i % 16 != 15 && i % 16 != 14 && i % 16 != 13) 					bomb_tile_next[i+3] = EXP_RIGHT;	// not the rightmost three columns
@@ -351,7 +349,7 @@ assign display4 = display_r4;
 							if(i % 16 != 0) 													bomb_tile_next[i-1] = EXP_LEFT;  	// not the leftmost column
 							if(i % 16 != 0 && i % 16 != 1) 										bomb_tile_next[i-2] = EXP_LEFT;  	// not the leftmost two columns
 							if(i % 16 != 0 && i % 16 != 1 && i % 16 != 2) 						bomb_tile_next[i-3] = EXP_LEFT;  	// not the leftmost three columns
-							if(i % 16 != 0 && i % 16 != 1 && i % 16 != 2 && i % 16 != 3) 			bomb_tile_next[i-4] = EXP_LEFT;  	// not the leftmost four columns
+							if(i % 16 != 0 && i % 16 != 1 && i % 16 != 2 && i % 16 != 3) 		bomb_tile_next[i-4] = EXP_LEFT;  	// not the leftmost four columns
 							if(i > 15) 															bomb_tile_next[i-16] = EXP_UP; 		// not the first row
 							if(i > 31) 															bomb_tile_next[i-32] = EXP_UP; 		// not the first two rows
 							if(i > 47) 															bomb_tile_next[i-48] = EXP_UP; 		// not the first three rows
@@ -366,7 +364,7 @@ assign display4 = display_r4;
 
 				else begin  // PUT BY P2
 					case(p2_bomb_len) 
-						0: begin
+						2'd0: begin
 							// if((i+1) % 16 != 0) bomb_tile_next[i+1] = EXP_RIGHT; 	// not the rightmost column
 							// if(i % 16 != 0) 	bomb_tile_next[i-1] = EXP_LEFT;  	// not the leftmost column
 							// if(i > 15) 			bomb_tile_next[i-16] = EXP_UP; 		// not the first row
@@ -388,7 +386,7 @@ assign display4 = display_r4;
 								display_w4 = 1;
 							end 
 						end	
-						1: begin
+						2'd1: begin
 							if((i+1) % 16 != 0) 				bomb_tile_next[i+1] = EXP_RIGHT; 	// not the rightmost column
 							if(i % 16 != 15 && i % 16 != 14) 	bomb_tile_next[i+2] = EXP_RIGHT;	// not the rightmost two columns
 							if(i % 16 != 0) 					bomb_tile_next[i-1] = EXP_LEFT;  	// not the leftmost column
@@ -398,7 +396,7 @@ assign display4 = display_r4;
 							if(i < 240)							bomb_tile_next[i+16] = EXP_DOWN; 	// not the last row
 							if(i < 224)							bomb_tile_next[i+32] = EXP_DOWN; 	// not the last two rows	  
 						end	
-						2: begin
+						2'd2: begin
 							if((i+1) % 16 != 0) 								bomb_tile_next[i+1] = EXP_RIGHT; 	// not the rightmost column
 							if(i % 16 != 15 && i % 16 != 14) 					bomb_tile_next[i+2] = EXP_RIGHT;	// not the rightmost two columns
 							if(i % 16 != 15 && i % 16 != 14 && i % 16 != 13) 	bomb_tile_next[i+3] = EXP_RIGHT;	// not the rightmost three columns
@@ -412,7 +410,7 @@ assign display4 = display_r4;
 							if(i < 224)											bomb_tile_next[i+32] = EXP_DOWN; 	// not the last two rows
 							if(i < 208)											bomb_tile_next[i+48] = EXP_DOWN; 	// not the last three rows
 						end	
-						3: begin
+						2'd3: begin
 							if((i+1) % 16 != 0) 												bomb_tile_next[i+1] = EXP_RIGHT; 	// not the rightmost column
 							if(i % 16 != 15 && i % 16 != 14) 									bomb_tile_next[i+2] = EXP_RIGHT;	// not the rightmost two columns
 							if(i % 16 != 15 && i % 16 != 14 && i % 16 != 13) 					bomb_tile_next[i+3] = EXP_RIGHT;	// not the rightmost three columns
@@ -420,7 +418,7 @@ assign display4 = display_r4;
 							if(i % 16 != 0) 													bomb_tile_next[i-1] = EXP_LEFT;  	// not the leftmost column
 							if(i % 16 != 0 && i % 16 != 1) 										bomb_tile_next[i-2] = EXP_LEFT;  	// not the leftmost two columns
 							if(i % 16 != 0 && i % 16 != 1 && i % 16 != 2) 						bomb_tile_next[i-3] = EXP_LEFT;  	// not the leftmost three columns
-							if(i % 16 != 0 && i % 16 != 1 && i % 16 != 2 && i % 16 != 3) 			bomb_tile_next[i-4] = EXP_LEFT;  	// not the leftmost four columns
+							if(i % 16 != 0 && i % 16 != 1 && i % 16 != 2 && i % 16 != 3) 		bomb_tile_next[i-4] = EXP_LEFT;  	// not the leftmost four columns
 							if(i > 15) 															bomb_tile_next[i-16] = EXP_UP; 		// not the first row
 							if(i > 31) 															bomb_tile_next[i-32] = EXP_UP; 		// not the first two rows
 							if(i > 47) 															bomb_tile_next[i-48] = EXP_UP; 		// not the first three rows
