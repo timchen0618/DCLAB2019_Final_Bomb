@@ -492,7 +492,7 @@ module DE2_115(
 	);
 
 	SevenHexDecoder seven_dec1(
-		.i_hex(p1_bomb_len),
+		.i_hex(bomb_num_1_in),
 		.o_seven_ten(HEX3),
 		.o_seven_one(HEX2)
 	);
@@ -504,7 +504,7 @@ module DE2_115(
 	);
 
 	SevenHexDecoder seven_dec3(
-		.i_hex(p2_bomb_len),
+		.i_hex(bomb_num_2_in),
 		.o_seven_ten(HEX7),
 		.o_seven_one(HEX6)
 	);

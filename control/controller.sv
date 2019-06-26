@@ -264,8 +264,8 @@ module controller
         p1_set_bomb_w   = 0;
         p2_set_bomb_w   = 0; 
 
-        p1_set_bomb_w   = p1_set_bomb_r;
-        p2_set_bomb_w   = p2_set_bomb_r;
+        // p1_set_bomb_w   = p1_set_bomb_r;
+        // p2_set_bomb_w   = p2_set_bomb_r;
         // if(o_ctr_r == 3) begin
         //     p1_set_bomb_w = 0;
         //     p2_set_bomb_w = 0;
@@ -306,13 +306,14 @@ module controller
         bomb_num_o1_w = bomb_num_o1_r;
         if(in_valid1_r) begin
             in_valid1_w = 0;
-            bomb1_ctr_w = 0;
-            bomb_valid1_w = 0;
+            
             if(bomb_1 & bomb_valid1_r) begin
                 //determine if exceed bomb num accessible
                 if(bomb_num_1 < bomb_max_1) begin
                     p1_set_bomb_w = 1;
                     bomb_num_o1_w = bomb_num_o1_r + 1;
+                    bomb1_ctr_w = 0;
+                    bomb_valid1_w = 0;
                 end
                 // else begin 
                 //     bomb_num_o1_w = 0;
@@ -385,12 +386,13 @@ module controller
 
         if(in_valid2_r) begin
             in_valid2_w = 0;
-            bomb1_ctr_w = 0;
-            bomb_valid1_w = 0;
-            if(bomb_2) begin
+            
+            if(bomb_2 & bomb_valid2_r) begin
                 //determine if exceed bomb num accessible
                 if(bomb_num_2 < bomb_max_2) begin
                     p2_set_bomb_w = 1;
+                    bomb2_ctr_w = 0;
+                    bomb_valid2_w = 0;
                 end
             end
             if((~bomb_valid1_r) && (bomb1_ctr_r == 2)) bomb_valid1_w = 1;
