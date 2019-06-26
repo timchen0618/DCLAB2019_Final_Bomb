@@ -73,8 +73,8 @@ module controller
 
     // assign p1_alive = p1_alive_r;
     // assign p2_alive = p2_alive_r;
-    assign p1_set_bomb = p1_set_bomb_r;
-    assign p2_set_bomb = p2_set_bomb_r;
+    assign p1_set_bomb = p1_set_bomb_r5;
+    assign p2_set_bomb = p2_set_bomb_r5;
     // assign p1_power = p1_power_r;
     // assign p2_power = p2_power_r;
     // assign p1_bomb_position = p1_bomb_position_r;
