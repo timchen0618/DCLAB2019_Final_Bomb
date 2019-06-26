@@ -7,7 +7,7 @@ module controller
 		input bomb_2,				// whether place bomb
 		input in_valid_1,
 		input in_valid_2,
-        // input [255:0] i_grid [0:3
+        // input [255:0] i_grid [0:3]
         input [1:0] i_wall [0:255],
         input [2:0] bomb_max_1,
         input [2:0] bomb_max_2,
@@ -174,7 +174,7 @@ module controller
     end 
 
     always @* begin
-        if(o_ctr_r < 3'd5) begin 
+        if(o_ctr_r < 3'd3) begin 
             o_ctr_w = o_ctr_r + 1;
         end
         else begin
@@ -215,7 +215,7 @@ module controller
         p1_set_bomb_w5  = 0;
         p2_set_bomb_w5  = 0;
 
-        if(o_ctr_r == 3'd4) begin 
+        if(o_ctr_r == 3'd2) begin 
             p1_x_w5         = p1_x_r;
             p2_x_w5         = p2_x_r;
             p1_y_w5         = p1_y_r;
