@@ -344,6 +344,7 @@ module DE2_115(
 	logic [5:0] bomb_p1_ctr_0;
 	logic [3:0] bomb_p1_o;
 	logic p2_able;
+	logic [3:0] p1_put_ctr_display;
 
 	Picture_Output picture_output(
 		.clk(CLOCK_50),
@@ -374,7 +375,8 @@ module DE2_115(
 		.display3(bomb_display3),
 		.display4(bomb_display4),
 		.bomb_p1_ctr_0(bomb_p1_ctr_0),
-		.bomb_p1_o(bomb_p1_o)
+		.bomb_p1_o(bomb_p1_o),
+		.p1_put_ctr(p1_put_ctr_display)
 		);
 
 	// assign LEDR[2] = bomb_display1;
@@ -490,13 +492,13 @@ module DE2_115(
 	);
 
 	SevenHexDecoder seven_dec1(
-		.i_hex(p1_bomb_len),
+		.i_hex(bomb_num_1_in),
 		.o_seven_ten(HEX3),
 		.o_seven_one(HEX2)
 	);
 
 	SevenHexDecoder seven_dec2(
-		.i_hex(out3_rx),
+		.i_hex(p1_put_ctr_display),
 		.o_seven_ten(HEX5),
 		.o_seven_one(HEX4)
 	);
