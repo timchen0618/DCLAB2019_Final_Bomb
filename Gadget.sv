@@ -65,6 +65,7 @@ module Gadget(
 			if(p1_able_to_add_len == 1'd1) begin
 				p1_len_nxt  = o_p1_len + 2'd1;
 			end
+			else p1_len_nxt = 2'd3;
 		end
 
 		if(o_gadget_state_grid[p2_cor] == LOTION)begin
@@ -72,6 +73,7 @@ module Gadget(
 				if(p2_able_to_add_len == 1'd1) begin
 					p2_len_nxt  = o_p2_len + 2'd1;
 				end
+				else p2_len_nxt = 2'd3;
 			end
 			
 		end	
@@ -80,6 +82,7 @@ module Gadget(
 			if(p1_able_to_add_bomb == 1'd1)begin
 				p1_cap_nxt = o_p1_cap + 2'd1;
 			end
+			else p1_cap_nxt = 3'd4;
 		end
 		
 		if(o_gadget_state_grid[p2_cor] == ADD_BOMB)begin
@@ -87,6 +90,7 @@ module Gadget(
 				if(p2_able_to_add_bomb == 1'd1)begin
 					p2_cap_nxt = o_p2_cap + 2'd1;
 				end
+				else p2_cap_nxt = 3'd4;
 			end
 		end
 	end
@@ -111,23 +115,8 @@ module Gadget(
 					end
 					else begin
 						//p1_len_nxt = 2'd3;
-						if(idx == p1_cor) begin
-							if(p1_able_to_add_len == 1'd1) begin
-								//p1_len_nxt = o_p1_len + 2'd1;
-								gadget_n[idx] = EMPTY;
-							end
-							else begin
-								gadget_n[idx] = o_gadget_state_grid[idx];
-							end
-						end
-						else if(idx == p2_cor) begin
-							if(p2_able_to_add_len == 1'd1) begin
-								//p2_len_nxt = o_p2_len + 2'd1;
-								gadget_n[idx] = EMPTY;
-							end
-							else begin
-								gadget_n[idx] = o_gadget_state_grid[idx];
-							end
+						if(idx == p1_cor || idx == p2_cor) begin
+							gadget_n[idx] = EMPTY;
 						end
 						else begin
 							gadget_n[idx] = o_gadget_state_grid[idx];
@@ -140,23 +129,8 @@ module Gadget(
 						gadget_n[idx] = EMPTY;
 					end
 					else begin
-						if(idx == p1_cor)begin
-							if(p1_able_to_add_bomb == 1'd1)begin
-								//p1_cap_nxt = o_p1_cap + 3'd1;
-								gadget_n[idx] = EMPTY;
-							end
-							else begin
-								gadget_n[idx] = o_gadget_state_grid[idx];
-							end
-						end
-						else if(idx == p2_cor)begin
-							if(p2_able_to_add_bomb == 1'd1)begin
-								//p2_cap_nxt = o_p2_cap + 3'd1;
-								gadget_n[idx] = EMPTY;
-							end
-							else begin
-								gadget_n[idx] = o_gadget_state_grid[idx];
-							end
+						if(idx == p1_cor || idx == p2_cor)begin
+							gadget_n[idx] = EMPTY;
 						end
 						else begin
 							gadget_n[idx] = o_gadget_state_grid[idx];
