@@ -174,7 +174,7 @@ module controller
     end 
 
     always @* begin
-        if(o_ctr_r < 3'd3) begin 
+        if(o_ctr_r < 3'd4) begin 
             o_ctr_w = o_ctr_r + 1;
         end
         else begin
@@ -215,7 +215,7 @@ module controller
         p1_set_bomb_w5  = 0;
         p2_set_bomb_w5  = 0;
 
-        if(o_ctr_r == 3'd2) begin 
+        if(o_ctr_r == 3'd3) begin 
             p1_x_w5         = p1_x_r;
             p2_x_w5         = p2_x_r;
             p1_y_w5         = p1_y_r;
@@ -231,7 +231,7 @@ module controller
     always @* begin
         p1_set_bomb_w   = p1_set_bomb_r;
         p2_set_bomb_w   = p2_set_bomb_r;
-        if(o_ctr_r == 2) begin
+        if(o_ctr_r == 3) begin
             p1_set_bomb_w = 0;
             p2_set_bomb_w = 0;
         end 
