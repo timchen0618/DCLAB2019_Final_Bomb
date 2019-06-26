@@ -13,6 +13,7 @@ module controller
         input [2:0] bomb_max_2,
         input [2:0] bomb_num_1,
         input [2:0] bomb_num_2,
+        input [255:0] bomb_wall_in,
 
 		// output p1_alive,
         // output p2_alive,
@@ -185,6 +186,17 @@ module controller
         
     end 
 
+<<<<<<< HEAD
+=======
+    always @* begin
+        if(o_ctr_r < 3'd5) begin
+            o_ctr_w = o_ctr_r + 1;
+        end
+        else begin
+            o_ctr_w = 0;
+        end  
+    end 
+>>>>>>> 070965d6d990280d69b861ed19375ca304f453b0
 
     // always @* begin
     //     bomb_max_1_w = bomb_max_1_r;
@@ -211,6 +223,7 @@ module controller
         end
     end 
 
+<<<<<<< HEAD
     // always @* begin 
     //     p1_x_w5         = p1_x_r5;
     //     p2_x_w5         = p2_x_r5;
@@ -218,6 +231,24 @@ module controller
     //     p2_y_w5         = p2_y_r5;
     //     p1_set_bomb_w5  = 0;
     //     p2_set_bomb_w5  = 0;
+=======
+    always @* begin 
+        p1_x_w5         = p1_x_r5;
+        p2_x_w5         = p2_x_r5;
+        p1_y_w5         = p1_y_r5;
+        p2_y_w5         = p2_y_r5;
+        p1_set_bomb_w5  = 0;
+        p2_set_bomb_w5  = 0;
+
+        if(o_ctr_r == 3'd3) begin 
+            p1_x_w5         = p1_x_r;
+            p2_x_w5         = p2_x_r;
+            p1_y_w5         = p1_y_r;
+            p2_y_w5         = p2_y_r;
+            p1_set_bomb_w5  = p1_set_bomb_r;
+            p2_set_bomb_w5  = p2_set_bomb_r;
+        end
+>>>>>>> 070965d6d990280d69b861ed19375ca304f453b0
 
     //     if(o_ctr_r == 3'd2) begin 
     //         p1_x_w5         = p1_x_r;
@@ -233,8 +264,17 @@ module controller
     //consider set bomb or not
     //update coordinate
     always @* begin
+<<<<<<< HEAD
         p1_set_bomb_w   = 0;
         p2_set_bomb_w   = 0; 
+=======
+        p1_set_bomb_w   = p1_set_bomb_r;
+        p2_set_bomb_w   = p2_set_bomb_r;
+        if(o_ctr_r == 3) begin
+            p1_set_bomb_w = 0;
+            p2_set_bomb_w = 0;
+        end 
+>>>>>>> 070965d6d990280d69b861ed19375ca304f453b0
         // p1_bomb_num_w   = p1_bomb_num_r;
         // p2_bomb_num_w   = p2_bomb_num_r;
         p1_x_w          = p1_x_r;
@@ -289,7 +329,7 @@ module controller
                             p1_coordinate_next[7:0] = 8'd16 * (p1_y_extend - 1) + p1_x_extend;
                         end
                         //if not wall or the top, y--
-                        if(~(i_wall[p1_coordinate_next[7:0]] != 0 || p1_coordinate_next[8] == 1)) begin
+                        if(~(i_wall[p1_coordinate_next[7:0]] != 0 || p1_coordinate_next[8] == 1 || bomb_wall_in[p1_coordinate_next[7:0]] == 1)) begin
                             p1_y_w = p1_y_r - 1;
                         end
                     end 
@@ -303,7 +343,7 @@ module controller
                             p1_coordinate_next = 8'd16 * (p1_y_extend + 1) + p1_x_extend;
                         end
                         //if not wall or the top, y++
-                        if(~(i_wall[p1_coordinate_next[7:0]] != 0  || p1_coordinate_next[8] == 1)) begin
+                        if(~(i_wall[p1_coordinate_next[7:0]] != 0  || p1_coordinate_next[8] == 1 || bomb_wall_in[p1_coordinate_next[7:0]] == 1)) begin
                             p1_y_w = p1_y_r + 1;
                         end
                     
@@ -318,7 +358,7 @@ module controller
                             p1_coordinate_next[7:0] = 8'd16 * (p1_y_extend) + (p1_x_extend-1);
                         end
                         //if not wall or the top, y--
-                        if(~(i_wall[p1_coordinate_next[7:0]] != 0  || p1_coordinate_next[8] == 1)) begin
+                        if(~(i_wall[p1_coordinate_next[7:0]] != 0  || p1_coordinate_next[8] == 1 || bomb_wall_in[p1_coordinate_next[7:0]] == 1)) begin
                             p1_x_w = p1_x_r - 1;
                         end 
 
@@ -333,7 +373,7 @@ module controller
                             p1_coordinate_next[7:0] = 8'd16 * p1_y_extend + (p1_x_extend+1);
                         end
                         //if not wall or the top, y++
-                        if(~(i_wall[p1_coordinate_next[7:0]] != 0  || p1_coordinate_next[8] == 1)) begin
+                        if(~(i_wall[p1_coordinate_next[7:0]] != 0  || p1_coordinate_next[8] == 1 || bomb_wall_in[p1_coordinate_next[7:0]] == 1)) begin
                             p1_x_w = p1_x_r + 1;
                         end
                     end
@@ -364,7 +404,7 @@ module controller
                             p2_coordinate_next[7:0] = 8'd16 * (p2_y_extend - 1) + p2_x_extend;
                         end
                         //if not wall or the top, y--
-                        if(~(i_wall[p2_coordinate_next[7:0]] != 0  || p2_coordinate_next[8] == 1)) begin
+                        if(~(i_wall[p2_coordinate_next[7:0]] != 0  || p2_coordinate_next[8] == 1 || bomb_wall_in[p2_coordinate_next[7:0]] == 1)) begin
                             p2_y_w = p2_y_r - 1;
                         end
                     end 
@@ -378,7 +418,7 @@ module controller
                             p2_coordinate_next[7:0] = 8'd16 * (p2_y_extend + 1) + p2_x_extend;
                         end
                         //if not wall or the top, y++
-                        if(~(i_wall[p2_coordinate_next[7:0]] != 0  || p2_coordinate_next[8] == 1)) begin
+                        if(~(i_wall[p2_coordinate_next[7:0]] != 0  || p2_coordinate_next[8] == 1 || bomb_wall_in[p2_coordinate_next[7:0]] == 1)) begin
                             p2_y_w = p2_y_r + 1;
                         end
                     
@@ -393,7 +433,7 @@ module controller
                             p2_coordinate_next[7:0] = 8'd16 * (p2_y_extend) + (p2_x_extend-1);
                         end
                         //if not wall or the top, y--
-                        if(~(i_wall[p2_coordinate_next[7:0]] != 0  || p2_coordinate_next[8] == 1)) begin
+                        if(~(i_wall[p2_coordinate_next[7:0]] != 0  || p2_coordinate_next[8] == 1 || bomb_wall_in[p2_coordinate_next[7:0]] == 1)) begin
                             p2_x_w = p2_x_r - 1;
                         end 
 
@@ -408,7 +448,7 @@ module controller
                             p2_coordinate_next[7:0] = 8'd16 * p2_y_extend + (p2_x_extend+1);
                         end
                         //if not wall or the top, y++
-                        if(~(i_wall[p2_coordinate_next[7:0]] != 0  || p2_coordinate_next[8] == 1)) begin
+                        if(~(i_wall[p2_coordinate_next[7:0]] != 0  || p2_coordinate_next[8] == 1 || bomb_wall_in[p2_coordinate_next[7:0]] == 1)) begin
                             p2_x_w = p2_x_r + 1;
                         end
                     end

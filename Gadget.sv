@@ -140,7 +140,7 @@ module Gadget(
 				HIDE_LOTION:
 				begin
 					if(i_explode[idx] == 1'd1)begin
-						if(gadget_ctr[idx] >= 6'd30) begin
+						if(gadget_ctr[idx] >= 6'd17) begin
 							gadget_n[idx] = LOTION;
 							gadget_ctr_nxt[idx] = 0;
 						end
@@ -156,7 +156,7 @@ module Gadget(
 				HIDE_ADD_BOMB:
 				begin
 					if(i_explode[idx] == 1'd1) begin
-						if(gadget_ctr[idx] >= 6'd30) begin
+						if(gadget_ctr[idx] >= 6'd17) begin
 							gadget_n[idx] = ADD_BOMB;
 							gadget_ctr_nxt[idx] = 0;
 						end
