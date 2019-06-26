@@ -231,7 +231,7 @@ module controller
     always @* begin
         p1_set_bomb_w   = p1_set_bomb_r;
         p2_set_bomb_w   = p2_set_bomb_r;
-        if(o_ctr_r == 4) begin
+        if(o_ctr_r == 2) begin
             p1_set_bomb_w = 0;
             p2_set_bomb_w = 0;
         end 
