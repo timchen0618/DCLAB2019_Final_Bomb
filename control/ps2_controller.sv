@@ -104,7 +104,7 @@ module ps2_controller
 
 		if(rx_done_r) begin
 			o_ctr_w = o_ctr_r + 1;
-			case(o_ctr_r)  
+			case(o_ctr_r)
 				0: begin
 					out1_w = rx_data_r[3:0];
 				end
