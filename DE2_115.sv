@@ -137,7 +137,6 @@ module DE2_115(
 );
 	
 	
-	logic reset;
 	logic [7:0] vga_r, vga_g, vga_b;
 	logic [9:0] drawX, drawY;
 	logic [3:0] StateArray [0:255];
@@ -158,10 +157,9 @@ module DE2_115(
 	assign VGA_R = vga_r;
 	assign VGA_B = vga_b;
 
-	assign reset = SW[1];
 
-	always_ff @(posedge CLOCK_50 or posedge reset) begin 
-		if(reset) begin
+	always_ff @(posedge CLOCK_50 or posedge SW[0]) begin 
+		if(SW[0]) begin
 			clock_vga <= 0;
 		end else begin
 			clock_vga <= clock_vga_next;
@@ -172,7 +170,7 @@ module DE2_115(
 		clock_vga_next = ~clock_vga;
 	end
 
-	assign LEDR[10] = reset;
+	assign LEDR[10] = SW[0];
 
 	//#######################Tim#####################################//
 	wire [7:0] data_in;
@@ -486,13 +484,13 @@ module DE2_115(
 	// );
 
 	SevenHexDecoder seven_dec0(
-		.i_hex(out1_rx),
+		.i_hex(p1_bomb_cap),
 		.o_seven_ten(HEX1),
 		.o_seven_one(HEX0)
 	);
 
 	SevenHexDecoder seven_dec1(
-		.i_hex(out2_rx),
+		.i_hex(p1_bomb_len),
 		.o_seven_ten(HEX3),
 		.o_seven_one(HEX2)
 	);

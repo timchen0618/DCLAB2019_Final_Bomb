@@ -246,10 +246,10 @@ assign display4 = display_r4;
 	end
 
 	always_comb begin 
-		display_w1 = display_r1;
-		display_w2 = display_r2;
-		display_w3 = display_r3;
-		display_w4 = display_r4;
+		display_w1 = 0;
+		display_w2 = 0;
+		display_w3 = 0;
+		display_w4 = 0;
 		for(i = 0; i < 256 ; i = i + 1) begin
 			bomb_tile_next[i] 	= bomb_tile[i];
 			bomb_ctr_next[i]	= bomb_ctr[i];
