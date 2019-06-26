@@ -284,6 +284,12 @@ module controller
         //bomb_ctr
         bomb1_ctr_w = bomb1_ctr_r + 1;
         bomb2_ctr_w = bomb2_ctr_r + 1;
+        if(bomb1_ctr_r > 2) begin
+            bomb1_ctr_w = 0;
+        end
+        if(bomb2_ctr_r > 2) begin
+            bomb1_ctr_w = 0;
+        end
         bomb_valid1_w = bomb_valid1_r;
         bomb_valid2_w = bomb_valid2_r;
 
