@@ -73,8 +73,8 @@ module controller
 
     // assign p1_alive = p1_alive_r;
     // assign p2_alive = p2_alive_r;
-    assign p1_set_bomb = p1_set_bomb_r5;
-    assign p2_set_bomb = p2_set_bomb_r5;
+    assign p1_set_bomb = p1_set_bomb_r;
+    assign p2_set_bomb = p2_set_bomb_r;
     // assign p1_power = p1_power_r;
     // assign p2_power = p2_power_r;
     // assign p1_bomb_position = p1_bomb_position_r;
@@ -89,10 +89,10 @@ module controller
     assign p2_y_extend[7:4] = 4'd0; 
     assign p1_coordinate_o = 8'd16 * p1_y_extend + p1_x_extend;
     assign p2_coordinate_o = 8'd16 * p2_y_extend + p2_x_extend;
-    assign p1_x = p1_x_r5;
-    assign p1_y = p1_y_r5;
-    assign p2_x = p2_x_r5;
-    assign p2_y = p2_y_r5;
+    assign p1_x = p1_x_r;
+    assign p1_y = p1_y_r;
+    assign p2_x = p2_x_r;
+    assign p2_y = p2_y_r;
 
     assign direction_1_o = face_dir_1_r;
     assign direction_2_o = face_dir_2_r;
