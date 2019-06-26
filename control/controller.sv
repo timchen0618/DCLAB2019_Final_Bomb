@@ -39,7 +39,8 @@ module controller
         output [3:0] bomb_max_1_o,
         output in_valid_1_dis,
         output in_valid_2_dis,
-        output [7:0] p1_coordinate_next_o
+        output [7:0] p1_coordinate_next_o,
+        output bomb_valid1_o
 	);
 
     parameter UP 	= 3'd0;
@@ -110,6 +111,7 @@ module controller
 
     assign in_valid_1_dis = in_valid1_r;
     assign in_valid_2_dis = in_valid2_r;
+    assign bomb_valid1_o = bomb_valid1_r;
 
     always_ff @(posedge clk, posedge rst) begin
         if(rst) begin
@@ -125,8 +127,8 @@ module controller
             // p2_bomb_position_r  <= 0;
             p1_x_r              <= 0;
             p1_y_r              <= 0;
-            p2_x_r              <= 0;
-            p2_y_r              <= 0;
+            p2_x_r              <= 15;
+            p2_y_r              <= 15;
             p1_x_r5             <= 0;
             p1_y_r5             <= 0;
             p2_x_r5             <= 0;
@@ -302,7 +304,7 @@ module controller
         // p1_bomb_position_w  = p1_bomb_position_r;
         // p2_bomb_position_w  = p2_bomb_position_r;
         
-
+        if((~bomb_valid1_r) && (bomb1_ctr_r >= 1)) bomb_valid1_w = 1;
         bomb_num_o1_w = bomb_num_o1_r;
         if(in_valid1_r) begin
             in_valid1_w = 0;
@@ -319,7 +321,7 @@ module controller
                 //     bomb_num_o1_w = 0;
                 // end 
             end
-            if((~bomb_valid1_r) && (bomb1_ctr_r == 2)) bomb_valid1_w = 1;
+            
             if(~(direction_1 == STOP)) begin
                 case(direction_1)
                     UP:
@@ -384,6 +386,7 @@ module controller
             end
         end 
 
+        if((~bomb_valid1_r) && (bomb1_ctr_r >= 1)) bomb_valid1_w = 1;
         if(in_valid2_r) begin
             in_valid2_w = 0;
             
@@ -395,7 +398,7 @@ module controller
                     bomb_valid2_w = 0;
                 end
             end
-            if((~bomb_valid1_r) && (bomb1_ctr_r == 2)) bomb_valid1_w = 1;
+            
             if(~(direction_2 == STOP)) begin
                 case(direction_2)
                     UP:

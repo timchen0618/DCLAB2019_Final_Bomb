@@ -1,18 +1,18 @@
 module  p1_winROM
 (       input clk,
-        input logic [9:0] read_address,
+        input logic [18:0] read_address,
 		output logic [3:0] data_Out
 );
 
 
 
-logic [3:0] mem0 [0:899];
+logic [3:0] mem0 [0:640*480-1];
 
 
 
 initial
 begin
-    $readmemh("./PNG To Hex/On-Chip Memory/sprite_bytes/p1.txt", mem0);   
+    $readmemh("./PNG To Hex/On-Chip Memory/sprite_bytes/smiley.txt", mem0);   
 end
 
 

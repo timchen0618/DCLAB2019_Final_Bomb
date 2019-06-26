@@ -77,19 +77,19 @@ module  color_mapper ( input        clk,
 
     gameoverROM gameoverROM(
         .clk(clk),
-        .read_address(DrawX - 80 - 30*tileX + (DrawY -30*tileY)*30),
+        .read_address(DrawX + 640*DrawY),
         .data_Out(gameover_color_out)
     );
 
     p1_winROM p1_winROM(
         .clk(clk),
-        .read_address(DrawX - 80 - 30*tileX + (DrawY -30*tileY)*30),
+        .read_address(DrawX + 640*DrawY),
         .data_Out(p1_win_color_out)
     );
 
     p2_winROM p2_winROM(
         .clk(clk),
-        .read_address(DrawX - 80 - 30*tileX + (DrawY -30*tileY)*30),
+        .read_address(DrawX + 640*DrawY),
         .data_Out(p2_win_color_out)
     );
 

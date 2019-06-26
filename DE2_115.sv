@@ -231,6 +231,7 @@ module DE2_115(
 	logic clk_6;
 	logic in_valid_1_display;
 	logic in_valid_2_display;
+	logic bomb_valid1_display;
 	logic [8:0] next_cor;
 	logic [3:0] out1_rx, out2_rx, out3_rx, out4_rx;
 
@@ -278,7 +279,8 @@ module DE2_115(
 		.bomb_max_1_o(bomb_max_display),
 		.in_valid_1_dis(in_valid_1_display),
 		.in_valid_2_dis(in_valid_2_display),
-		.p1_coordinate_next_o(next_cor)
+		.p1_coordinate_next_o(next_cor),
+		.bomb_valid1_o(bomb_valid1_display)
 
 	);
 
@@ -389,6 +391,7 @@ module DE2_115(
 	assign LEDR[5] = bomb_display4;
 	assign LEDR[6] = in_valid_1_display;
 	assign LEDR[7] = in_valid_2_display;
+	assign LEDR[17] = bomb_valid1_display;
 	//assign LEDR[10] = p1_put;
 	//assign LEDR[16] = wall[4]; 
 

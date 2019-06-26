@@ -42,9 +42,7 @@ parameter P1_WIN 	= 2'd2;
 parameter P2_WIN 	= 2'd3; 
 
 // integers
-integer ii, i, i2, i3, i4, i5, i6, i7, i8;
-integer i9, i10;
-integer i11, i12;
+integer ii, i, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13, i14;
 
 logic [2:0] bomb_tile_next [0:255];
 logic [2:0] bomb_tile_prev_r [0:255];
@@ -235,11 +233,13 @@ assign display4 = display_r4;
 		display_w2 = 0;
 		display_w3 = 0;
 		display_w4 = 0;
-		for(i = 0; i < 256 ; i = i + 1) begin
-			bomb_tile_next[i] 	= bomb_tile[i];
-			bomb_ctr_next[i]	= bomb_ctr[i];
+		for(i13 = 0; i13 < 256 ; i13 = i13 + 1) begin
+			bomb_tile_next[i13] 	= bomb_tile[i13];
+			bomb_ctr_next[i13]	= bomb_ctr[i13];
 		end
 
+		
+		
 		// considering p1 or p2 putting bomb, not yet setting ready explode
 		for(i = 0; i < 256 ; i = i + 1) begin
 			// handling setting bomb
@@ -345,8 +345,14 @@ assign display4 = display_r4;
 					end	
 				endcase // p1_bomb_len
 			end
-			if(bomb_tile[i] >= EXP_UP && bomb_tile_prev_r[i] == BOMB_UN) begin 
-				bomb_tile_next[i] = EXP_CEN;
+			// if(bomb_tile[i] >= EXP_UP && bomb_tile_prev_r[i] == BOMB_UN) begin 
+			// 	bomb_tile_next[i] = EXP_CEN;
+			// end
+		end
+		
+		for(i14 = 0; i14 < 256; i14 = i14 + 1) begin
+			if(bomb_tile[i14] >= EXP_UP && bomb_tile_prev_r[i14] == BOMB_UN) begin 
+				bomb_tile_next[i14] = EXP_CEN;
 			end
 		end
 	end
