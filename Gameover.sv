@@ -6,28 +6,28 @@ module Gameover(
 	input [7:0] p1_cor,
 	input [7:0] p2_cor,
 	//output
-	output logic [2:0] gameover_state
+	output logic [1:0] gameover_state
 	);
 		
 	
-	parameter NONE = 3'd0;
-	parameter GAMEOVER = 3'd1;
-	parameter P1 = 3'd2;
-	parameter P2 = 3'd3;
-	parameter FINISH = 3'd4;
+	parameter NONE = 2'd0;
+	parameter GAMEOVER = 2'd1;
+	parameter P1 = 2'd2;
+	parameter P2 = 2'd3;
+	//parameter FINISH = 3'd4;
 
 	parameter P1_WIN = 1'd0;
 	parameter P2_WIN = 1'd1;
 
-	logic [6:0] gameover_ctr, gameover_ctr_nxt;
-	logic [2:0] gameover_state_nxt;
+	logic [5:0] gameover_ctr, gameover_ctr_nxt;
+	logic [1:0] gameover_state_nxt;
 	logic winner, winner_nxt;
 
 	always_ff @(posedge clk or posedge reset) begin 
 		if(reset) begin
 			winner <= 1'd0;
-			gameover_state <= 3'd0;
-			gameover_ctr <= 7'd0;
+			gameover_state <= 2'd0;
+			gameover_ctr <= 6'd0;
 		end else begin
 			winner <= winner_nxt;
 			gameover_state <= gameover_state_nxt;
@@ -54,7 +54,7 @@ module Gameover(
 			end
 			GAMEOVER:
 			begin
-				if(gameover_ctr >= 7'd60) begin
+				if(gameover_ctr >= 6'd60) begin
 					if(winner == P1_WIN) begin
 						gameover_state_nxt = P1;
 					end
@@ -63,25 +63,15 @@ module Gameover(
 					end
 					gameover_ctr_nxt = 0;
 				end
-				else gameover_ctr_nxt = gameover_ctr + 7'd1;
+				else gameover_ctr_nxt = gameover_ctr + 6'd1;
 			end
 			P1:
 			begin
-				if(gameover_ctr >= 7'd90) begin
-					gameover_state_nxt = FINISH;
-				end
-				else gameover_ctr_nxt = gameover_ctr + 7'd1;
+				gameover_state_nxt = P1;
 			end
 			P2:
 			begin
-				if(gameover_ctr >= 7'd90) begin
-					gameover_state_nxt = FINISH;
-				end
-				else gameover_ctr_nxt = gameover_ctr + 7'd1;
-			end
-			FINISH:
-			begin
-				gameover_state_nxt = gameover_state;
+				gameover_state_nxt = P2;
 			end
 			default:
 			begin
