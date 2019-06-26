@@ -7,7 +7,7 @@ module controller
 		input bomb_2,				// whether place bomb
 		input in_valid_1,
 		input in_valid_2,
-        // input [255:0] i_grid [0:3]
+        // input [255:0] i_grid [0:3
         input [1:0] i_wall [0:255],
         input [2:0] bomb_max_1,
         input [2:0] bomb_max_2,
