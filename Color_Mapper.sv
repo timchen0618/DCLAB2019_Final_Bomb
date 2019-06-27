@@ -50,6 +50,7 @@ module  color_mapper ( input        clk,
     logic [3:0] gameover_color_out;
     logic [3:0] p1_win_color_out;
     logic [3:0] p2_win_color_out;
+    logic [3:0] backgroundPic_color_out;
 
     
     // Output colors to VGA
@@ -74,6 +75,12 @@ module  color_mapper ( input        clk,
 		.read_address(DrawX - 80 - 30*tileX + (DrawY -30*tileY)*30),
 		.data_Out(color_out)
 	);
+
+    backgroundPicROM BackgroundPic(
+        .clk(clk),
+        .read_address(DrawX/2 + 320*(DrawY/2)),
+        .data_Out(backgroundPic_color_out)
+    );
 
     gameoverROM gameoverROM(
         .clk(clk),
@@ -121,7 +128,90 @@ module  color_mapper ( input        clk,
         end
 
         case(gameStatus)
-            NOT_OVER: begin 
+            NOT_OVER: begin
+                case (backgroundPic_color_out)
+                    0: begin 
+                        Red_next = 8'haa;
+                        Green_next = 8'hea;
+                        Blue_next = 8'h66;
+                    end
+                    1: begin 
+                        Red_next = 8'haa;
+                        Green_next = 8'hea;
+                        Blue_next = 8'h66;
+                    end
+                    2: begin 
+                        Red_next = 8'h3C;
+                        Green_next = 8'hAB;
+                        Blue_next = 8'hDD;
+                    end
+                    3: begin 
+                        Red_next = 8'h93;
+                        Green_next = 8'hCF;
+                        Blue_next = 8'h81;
+                    end
+                    4: begin 
+                        Red_next = 8'h98;
+                        Green_next = 8'hE7;
+                        Blue_next = 8'hD8;
+                    end
+                    5: begin 
+                        Red_next = 8'h37;
+                        Green_next = 8'hE2;
+                        Blue_next = 8'hD5;
+                    end
+                    6: begin 
+                        Red_next = 8'h22;
+                        Green_next = 8'hBB;
+                        Blue_next = 8'hE6;
+                    end
+                    7: begin 
+                        Red_next = 8'hfc;
+                        Green_next = 8'hc6;
+                        Blue_next = 8'h56;
+                    end
+                    8: begin 
+                        Red_next = 8'ha8;
+                        Green_next = 8'h7C;
+                        Blue_next = 8'h07;
+                    end
+                    9: begin 
+                        Red_next = 8'hcb;
+                        Green_next = 8'h8C;
+                        Blue_next = 8'h1A;
+                    end
+                    10: begin 
+                        Red_next = 8'hE7;
+                        Green_next = 8'h89;
+                        Blue_next = 8'h24;
+                    end
+                    11: begin 
+                        Red_next = 8'hf2;
+                        Green_next = 8'hAB;
+                        Blue_next = 8'h45;
+                    end
+                    12: begin 
+                        Red_next = 8'ha0;
+                        Green_next = 8'h61;
+                        Blue_next = 8'h1f;
+                    end
+                    13: begin 
+                        Red_next = 8'h09;
+                        Green_next = 8'h64;
+                        Blue_next = 8'hc8;
+                    end
+                    14: begin 
+                        Red_next = 8'hfb;
+                        Green_next = 8'hfe;
+                        Blue_next = 8'hf2;
+                    end
+                    15: begin 
+                        Red_next = 8'h39;
+                        Green_next = 8'h40;
+                        Blue_next = 8'h3a;
+                    end
+                endcase // backgroundpic_color_out
+
                 if(DrawX < 80) begin 
                     Red_next = 8'haa;
                     Green_next = 8'hea;
@@ -132,20 +222,20 @@ module  color_mapper ( input        clk,
                     Red_next = 8'haa;
                     Green_next = 8'hea;
                     Blue_next = 8'h66;
-                end
+                end          
 
                 else begin
                     if(player_status == PLAYER_1 || player_status == PLAYER_2) begin
                         case (player_color_out)
-                            0: begin 
-                                Red_next = 8'haa;
-                                Green_next = 8'hea;
-                                Blue_next = 8'h66;
-                            end
-                            1: begin 
-                                Red_next = 8'haa;
-                                Green_next = 8'hea;
-                                Blue_next = 8'h66;
+                            // 0: begin 
+                            //     Red_next = 8'haa;
+                            //     Green_next = 8'hea;
+                            //     Blue_next = 8'h66;
+                            // end
+                            // 1: begin 
+                            //     Red_next = 8'haa;
+                            //     Green_next = 8'hea;
+                            //     Blue_next = 8'h66;
                             end
                             2: begin 
                                 Red_next = 8'h3C;
@@ -222,15 +312,15 @@ module  color_mapper ( input        clk,
 
                     else begin
                         case (color_out)
-                            0: begin 
-                                Red_next = 8'haa;
-                                Green_next = 8'hea;
-                                Blue_next = 8'h66;
-                            end
-                            1: begin 
-                                Red_next = 8'haa;
-                                Green_next = 8'hea;
-                                Blue_next = 8'h66;
+                            // 0: begin 
+                            //     Red_next = 8'haa;
+                            //     Green_next = 8'hea;
+                            //     Blue_next = 8'h66;
+                            // end
+                            // 1: begin 
+                            //     Red_next = 8'haa;
+                            //     Green_next = 8'hea;
+                            //     Blue_next = 8'h66;
                             end
                             2: begin 
                                 Red_next = 8'h3C;

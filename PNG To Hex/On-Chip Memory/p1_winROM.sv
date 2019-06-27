@@ -1,12 +1,12 @@
 module  p1_winROM
 (       input clk,
-        input logic [18:0] read_address,
+        input logic [16:0] read_address,
 		output logic [3:0] data_Out
 );
 
 
 
-logic [3:0] mem0 [0:640*480-1];
+logic [3:0] mem0 [0:320*240-1];
 
 
 

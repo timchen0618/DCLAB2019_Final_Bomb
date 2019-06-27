@@ -7,6 +7,7 @@ module bomb(
 	input [7:0] p1_cor, p2_cor,
 	input p1_put, 
 	input p2_put,
+	input [1:0] wall_grid [0:255],
 	output logic [2:0] bomb_tile [0:255],
 	output logic [255:0] explode,
 	output [2:0] bomb_num_p1,
