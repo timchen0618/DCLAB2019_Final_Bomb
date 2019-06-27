@@ -382,7 +382,8 @@ module DE2_115(
 		.bomb_p1_ctr_0(bomb_p1_ctr_0),
 		.bomb_p1_o(bomb_p1_o),
 		.p1_put_ctr(p1_put_ctr_display),
-		.bomb_un_grid(bomb_wall)
+		.bomb_un_grid(bomb_wall),
+		.wall_grid(wall_grid)
 		);
 
 	// assign LEDR[2] = bomb_display1;

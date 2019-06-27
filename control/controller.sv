@@ -108,6 +108,7 @@ module controller
     logic in_valid1_w, in_valid1_r, in_valid2_r, in_valid2_w;
     logic bomb_valid1_w, bomb_valid1_r, bomb_valid2_w, bomb_valid2_r;
     logic [1:0] bomb1_ctr_r, bomb1_ctr_w, bomb2_ctr_r, bomb2_ctr_w;
+    logic p1cor_valid_w, p1cor_valid_r, p2cor_valid_r, p2cor_valid_w;
 
     assign in_valid_1_dis = in_valid1_r;
     assign in_valid_2_dis = in_valid2_r;
@@ -149,6 +150,8 @@ module controller
             //bomb ctr
             bomb1_ctr_r         <= 0;
             bomb2_ctr_r         <= 0;
+            p1cor_valid_r       <= 1;
+            p2cor_valid_r       <= 1;
 		end
 		else begin
             // p1_alive_r          <= p1_alive_w;
@@ -184,6 +187,8 @@ module controller
             bomb_valid2_r       <= bomb_valid2_w;
             bomb1_ctr_r         <= bomb1_ctr_w;
             bomb2_ctr_r         <= bomb2_ctr_w;
+            p1cor_valid_r       <= p1cor_valid_w;
+            p2cor_valid_r       <= p2cor_valid_w;
 		end 
         
     end 
@@ -283,7 +288,8 @@ module controller
         p2_coordinate_next = 0;
         in_valid1_w = 0;
         in_valid2_w = 0;
-        //bomb_ctr
+        
+        //bomb&people valid
         bomb1_ctr_w = bomb1_ctr_r + 1;
         bomb2_ctr_w = bomb2_ctr_r + 1;
         if(bomb1_ctr_r > 2) begin
@@ -294,20 +300,24 @@ module controller
         end
         bomb_valid1_w = bomb_valid1_r;
         bomb_valid2_w = bomb_valid2_r;
+        p1cor_valid_w = p1cor_valid_r;
+        p2cor_valid_w = p2cor_valid_r;
 
-        if(in_valid_1) begin
-            in_valid1_w = 1;
-        end
-        if(in_valid_2) begin
-            in_valid2_w = 1;
-        end 
+
+        // if(in_valid_1) begin
+        //     in_valid1_w = 1;
+        // end
+        // if(in_valid_2) begin
+        //     in_valid2_w = 1;
+        // end 
         // p1_bomb_position_w  = p1_bomb_position_r;
         // p2_bomb_position_w  = p2_bomb_position_r;
         
         if((~bomb_valid1_r) && (bomb1_ctr_r >= 1)) bomb_valid1_w = 1;
+        if(~p1cor_valid_r) p1cor_valid_w = 1;
         bomb_num_o1_w = bomb_num_o1_r;
-        if(in_valid1_r) begin
-            in_valid1_w = 0;
+        if(in_valid_1) begin
+            // in_valid1_w = 0;
             
             if(bomb_1 & bomb_valid1_r) begin
                 //determine if exceed bomb num accessible
@@ -322,7 +332,8 @@ module controller
                 // end 
             end
             
-            if(~(direction_1 == STOP)) begin
+            if((~(direction_1 == STOP)) & p1cor_valid_r) begin
+                p1cor_valid_w = 0;
                 case(direction_1)
                     UP:
                     begin
@@ -386,9 +397,10 @@ module controller
             end
         end 
 
-        if((~bomb_valid1_r) && (bomb1_ctr_r >= 1)) bomb_valid1_w = 1;
-        if(in_valid2_r) begin
-            in_valid2_w = 0;
+        if((~bomb_valid2_r) && (bomb2_ctr_r >= 1)) bomb_valid2_w = 1;
+        if(~p2cor_valid_r) p2cor_valid_w = 1;
+        if(in_valid_2) begin
+            //in_valid2_w = 0;
             
             if(bomb_2 & bomb_valid2_r) begin
                 //determine if exceed bomb num accessible
@@ -399,7 +411,8 @@ module controller
                 end
             end
             
-            if(~(direction_2 == STOP)) begin
+            if((~(direction_2 == STOP)) & p2cor_valid_r) begin
+                p2cor_valid_w = 0;
                 case(direction_2)
                     UP:
                     begin

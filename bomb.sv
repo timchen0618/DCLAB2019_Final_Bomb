@@ -286,7 +286,7 @@ assign display4 = display_r4;
 			end
 
 			// handling setting parameters to explode
-			if(bomb_tile[i] == EXP_CEN) begin
+			if(bomb_tile[i] == EXP_CEN && bomb_ctr[i] == 6'd0) begin
 				case(bomb_len_mem[i]) 
 					2'd0: begin
 						if((i+1) % 16 != 0) begin 
@@ -316,10 +316,14 @@ assign display4 = display_r4;
 							bomb_tile_next[i-1] = EXP_LEFT;  	// not the leftmost column
 							if(i % 16 != 1 && wall_grid[i-1] == EMPTY_WALL) bomb_tile_next[i-2] = EXP_LEFT;  	// not the leftmost two columns
 						end				
-						if(i > 15) 										bomb_tile_next[i-16] = EXP_UP; 		// not the first row
-						if(i > 31 && wall_grid[i-16] == EMPTY_WALL) 	bomb_tile_next[i-32] = EXP_UP; 		// not the first two rows
-						if(i < 240)										bomb_tile_next[i+16] = EXP_DOWN; 	// not the last row
-						if(i < 224 && wall_grid[i+16] == EMPTY_WALL)	bomb_tile_next[i+32] = EXP_DOWN; 	// not the last two rows	  
+						if(i > 15) begin 
+							bomb_tile_next[i-16] = EXP_UP; 		// not the first row
+							if(i > 31 && wall_grid[i-16] == EMPTY_WALL) bomb_tile_next[i-32] = EXP_UP; 		// not the first two rows
+						end 										
+						if(i < 240)	begin 
+							bomb_tile_next[i+16] = EXP_DOWN; 	// not the last row
+							if(i < 224 && wall_grid[i+16] == EMPTY_WALL)	bomb_tile_next[i+32] = EXP_DOWN; 	// not the last two rows	  
+						end									
 					end	
 					2'd2: begin
 						if((i+1) % 16 != 0) begin 

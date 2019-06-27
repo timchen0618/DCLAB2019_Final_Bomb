@@ -12,7 +12,7 @@ logic [3:0] mem0 [0:320*240-1];
 
 initial
 begin
-    $readmemh("./PNG To Hex/On-Chip Memory/sprite_bytes/GOheader.txt", mem0);   
+    $readmemh("./PNG To Hex/On-Chip Memory/sprite_bytes/bg4.txt", mem0);   
 end
 
 
