@@ -158,27 +158,27 @@ module  color_mapper ( input        clk,
     backgroundROM addBomb1(   
         .clk(clk),
         .state(OCC_ADD_BOMB),
-        .read_address(DrawX -25 + (DrawY - 90)*30)),
+        .read_address(DrawX -25 + (DrawY - 90)*30),
         .data_Out(addbomb1_color_out)
     );
 
     backgroundROM addBomb2(
         .clk(clk),
         .state(OCC_ADD_BOMB),
-        .read_address(DrawX -585 + (DrawY - 90)*30)),
+        .read_address(DrawX -585 + (DrawY - 90)*30),
         .data_Out(addbomb2_color_out)
     );
 
     backgroundROM lotion1(
         .clk(clk),
         .state(OCC_LOTION),
-        .read_address(DrawX -25 + (DrawY - 290)*30)),
+        .read_address(DrawX -25 + (DrawY - 290)*30),
         .data_Out(lotion1_color_out)
     );
     backgroundROM lotion2(
         .clk(clk),
         .state(OCC_LOTION),
-        .read_address(DrawX -585 + (DrawY - 290)*30)),
+        .read_address(DrawX -585 + (DrawY - 290)*30),
         .data_Out(lotion2_color_out)
     );
 
