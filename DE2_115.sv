@@ -451,6 +451,10 @@ module DE2_115(
         .VGA_G(vga_g), 
         .VGA_B(vga_b),
         .gameStatus(game_state) 
+        .o_p1_cap(p1_bomb_cap), 
+        .o_p2_cap(p2_bomb_cap),
+        .o_p1_len(p1_bomb_len), 
+        .o_p2_len(p2_bomb_len)
     );
 
     VGA_controller vga_controller(

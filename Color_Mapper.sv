@@ -23,6 +23,8 @@ module  color_mapper ( input        clk,
                        input 		[3:0] StateArray [0:255] ,
                        input        [9:0] DrawX, DrawY,
                        input        [1:0] gameStatus,
+                       input        [2:0] o_p1_cap, o_p2_cap,
+                       input        [1:0] o_p1_len, o_p2_len,
                        output logic [7:0] VGA_R, VGA_G, VGA_B // VGA RGB output
                      );
     // player status
@@ -35,6 +37,19 @@ module  color_mapper ( input        clk,
     parameter GAME_OVER = 2'd1;
     parameter P1_WIN    = 2'd2;
     parameter P2_WIN    = 2'd3; 
+
+    // OCC
+    parameter OCC_NONE      = 5'd0;
+    parameter OCC_LOTION    = 5'd1; // sth that can add bomb length
+    parameter OCC_BOMB      = 5'd2; // unxploded bomb
+    parameter OCC_ADD_BOMB  = 5'd3; // thing that can add bomb capacity
+    parameter OCC_CEN       = 5'd4;  // the center of the explosion 
+    parameter OCC_UP        = 5'd5;  
+    parameter OCC_DOWN      = 5'd6;  
+    parameter OCC_LEFT      = 5'd7;
+    parameter OCC_RIGHT     = 5'd8;
+    parameter OCC_WALL_ABLE = 5'd9;
+    parameter OCC_WALL_UN   = 5'd10;
 
     logic [7:0] Red, Green, Blue;
     logic [7:0] Red_next, Green_next, Blue_next;
@@ -51,6 +66,8 @@ module  color_mapper ( input        clk,
     logic [3:0] p1_win_color_out;
     logic [3:0] p2_win_color_out;
     logic [3:0] backgroundPic_color_out;
+    logic [3:0] number1_color_out, number2_color_out, number3_color_out, number4_color_out;
+    logic [3:0] addbomb1_color_out, addbomb2_color_out, lotion1_color_out, lotion2_color_out;
 
     
     // Output colors to VGA
@@ -98,6 +115,71 @@ module  color_mapper ( input        clk,
         .clk(clk),
         .read_address(DrawX/2 + 320*(DrawY/2)),
         .data_Out(p2_win_color_out)
+    );
+
+    // for right and left DISPLAY
+    numberROM  numberROM_1(     // ADD_BOMB_LEFT   // size = 60*150
+        .clk(clk),
+        .state(o_p1_cap),
+        .read_address(DrawX -10 + (DrawY - 130)*60),  // (10, 130)
+        .data_Out(number1_color_out)
+    );
+    numberROM  numberROM_2(     // LOTION_LEFT   // size = 60*150
+        .clk(clk),
+        .state(o_p1_len),
+        .read_address(DrawX -10 + (DrawY - 330)*60),
+        .data_Out(number2_color_out)
+    );
+    numberROM  numberROM_3(     // ADD_BOMB_RIGHT    // size = 60*150
+        .clk(clk),
+        .state(o_p2_cap),
+        .read_address(DrawX -570 + (DrawY - 130)*60),
+        .data_Out(number3_color_out)
+    );
+    numberROM  numberROM_4(    // LOTION_RIGHT     // size = 60*150
+        .clk(clk),
+        .state(o_p2_len),
+        .read_address(DrawX -570 + (DrawY - 330)*60),
+        .data_Out(number4_color_out)
+    );
+
+    p1_iconROM p1_iconROM(  // (10, 10)   // size = 60*60
+        .clk(clk),
+        .read_address(DrawX -10 + (DrawY - 10)*60),
+        .data_Out(p1_icon_color_out)
+    );
+
+    p2_iconROM p2_iconROM(
+        .clk(clk),
+        .read_address(DrawX -570 + (DrawY - 10)*60),
+        .data_Out(p2_icon_color_out)
+    );
+
+    backgroundROM addBomb1(   
+        .clk(clk),
+        .state(OCC_ADD_BOMB),
+        .read_address(DrawX -25 + (DrawY - 90)*30)),
+        .data_Out(addbomb1_color_out)
+    );
+
+    backgroundROM addBomb2(
+        .clk(clk),
+        .state(OCC_ADD_BOMB),
+        .read_address(DrawX -585 + (DrawY - 90)*30)),
+        .data_Out(addbomb2_color_out)
+    );
+
+    backgroundROM lotion1(
+        .clk(clk),
+        .state(OCC_LOTION),
+        .read_address(DrawX -25 + (DrawY - 290)*30)),
+        .data_Out(lotion1_color_out)
+    );
+    backgroundROM lotion2(
+        .clk(clk),
+        .state(OCC_LOTION),
+        .read_address(DrawX -585 + (DrawY - 290)*30)),
+        .data_Out(lotion2_color_out)
     );
 
     always_ff @(posedge clk or posedge rst) begin 
@@ -213,15 +295,749 @@ module  color_mapper ( input        clk,
         case(gameStatus)
             NOT_OVER: begin
                 if(DrawX < 80) begin 
-                    Red_next = 8'haa;
-                    Green_next = 8'hea;
-                    Blue_next = 8'h66;
+                    if(DrawY < 80) begin 
+                        case (p1_icon_color_out)
+                            2: begin 
+                                Red_next = 8'h3C;
+                                Green_next = 8'hAB;
+                                Blue_next = 8'hDD;
+                            end
+                            3: begin 
+                                Red_next = 8'h93;
+                                Green_next = 8'hCF;
+                                Blue_next = 8'h81;
+                            end
+                            4: begin 
+                                Red_next = 8'h98;
+                                Green_next = 8'hE7;
+                                Blue_next = 8'hD8;
+                            end
+                            5: begin 
+                                Red_next = 8'h37;
+                                Green_next = 8'hE2;
+                                Blue_next = 8'hD5;
+                            end
+                            6: begin 
+                                Red_next = 8'h22;
+                                Green_next = 8'hBB;
+                                Blue_next = 8'hE6;
+                            end
+                            7: begin 
+                                Red_next = 8'hfc;
+                                Green_next = 8'hc6;
+                                Blue_next = 8'h56;
+                            end
+                            8: begin 
+                                Red_next = 8'ha8;
+                                Green_next = 8'h7C;
+                                Blue_next = 8'h07;
+                            end
+                            9: begin 
+                                Red_next = 8'hcb;
+                                Green_next = 8'h8C;
+                                Blue_next = 8'h1A;
+                            end
+                            10: begin 
+                                Red_next = 8'hE7;
+                                Green_next = 8'h89;
+                                Blue_next = 8'h24;
+                            end
+                            11: begin 
+                                Red_next = 8'hf2;
+                                Green_next = 8'hAB;
+                                Blue_next = 8'h45;
+                            end
+                            12: begin 
+                                Red_next = 8'ha0;
+                                Green_next = 8'h61;
+                                Blue_next = 8'h1f;
+                            end
+                            13: begin 
+                                Red_next = 8'h09;
+                                Green_next = 8'h64;
+                                Blue_next = 8'hc8;
+                            end
+                            14: begin 
+                                Red_next = 8'hfb;
+                                Green_next = 8'hfe;
+                                Blue_next = 8'hf2;
+                            end
+                            15: begin 
+                                Red_next = 8'h39;
+                                Green_next = 8'h40;
+                                Blue_next = 8'h3a;
+                            end
+                        endcase // color_out
+                    end
+                    else if(DrawY < 130) begin 
+                        case (addbomb1_color_out)
+                            2: begin 
+                                Red_next = 8'h3C;
+                                Green_next = 8'hAB;
+                                Blue_next = 8'hDD;
+                            end
+                            3: begin 
+                                Red_next = 8'h93;
+                                Green_next = 8'hCF;
+                                Blue_next = 8'h81;
+                            end
+                            4: begin 
+                                Red_next = 8'h98;
+                                Green_next = 8'hE7;
+                                Blue_next = 8'hD8;
+                            end
+                            5: begin 
+                                Red_next = 8'h37;
+                                Green_next = 8'hE2;
+                                Blue_next = 8'hD5;
+                            end
+                            6: begin 
+                                Red_next = 8'h22;
+                                Green_next = 8'hBB;
+                                Blue_next = 8'hE6;
+                            end
+                            7: begin 
+                                Red_next = 8'hfc;
+                                Green_next = 8'hc6;
+                                Blue_next = 8'h56;
+                            end
+                            8: begin 
+                                Red_next = 8'ha8;
+                                Green_next = 8'h7C;
+                                Blue_next = 8'h07;
+                            end
+                            9: begin 
+                                Red_next = 8'hcb;
+                                Green_next = 8'h8C;
+                                Blue_next = 8'h1A;
+                            end
+                            10: begin 
+                                Red_next = 8'hE7;
+                                Green_next = 8'h89;
+                                Blue_next = 8'h24;
+                            end
+                            11: begin 
+                                Red_next = 8'hf2;
+                                Green_next = 8'hAB;
+                                Blue_next = 8'h45;
+                            end
+                            12: begin 
+                                Red_next = 8'ha0;
+                                Green_next = 8'h61;
+                                Blue_next = 8'h1f;
+                            end
+                            13: begin 
+                                Red_next = 8'h09;
+                                Green_next = 8'h64;
+                                Blue_next = 8'hc8;
+                            end
+                            14: begin 
+                                Red_next = 8'hfb;
+                                Green_next = 8'hfe;
+                                Blue_next = 8'hf2;
+                            end
+                            15: begin 
+                                Red_next = 8'h39;
+                                Green_next = 8'h40;
+                                Blue_next = 8'h3a;
+                            end
+                        endcase // color_out
+                    end
+                    else if(DrawY < 280) begin 
+                        case (number1_color_out)
+                            2: begin 
+                                Red_next = 8'h3C;
+                                Green_next = 8'hAB;
+                                Blue_next = 8'hDD;
+                            end
+                            3: begin 
+                                Red_next = 8'h93;
+                                Green_next = 8'hCF;
+                                Blue_next = 8'h81;
+                            end
+                            4: begin 
+                                Red_next = 8'h98;
+                                Green_next = 8'hE7;
+                                Blue_next = 8'hD8;
+                            end
+                            5: begin 
+                                Red_next = 8'h37;
+                                Green_next = 8'hE2;
+                                Blue_next = 8'hD5;
+                            end
+                            6: begin 
+                                Red_next = 8'h22;
+                                Green_next = 8'hBB;
+                                Blue_next = 8'hE6;
+                            end
+                            7: begin 
+                                Red_next = 8'hfc;
+                                Green_next = 8'hc6;
+                                Blue_next = 8'h56;
+                            end
+                            8: begin 
+                                Red_next = 8'ha8;
+                                Green_next = 8'h7C;
+                                Blue_next = 8'h07;
+                            end
+                            9: begin 
+                                Red_next = 8'hcb;
+                                Green_next = 8'h8C;
+                                Blue_next = 8'h1A;
+                            end
+                            10: begin 
+                                Red_next = 8'hE7;
+                                Green_next = 8'h89;
+                                Blue_next = 8'h24;
+                            end
+                            11: begin 
+                                Red_next = 8'hf2;
+                                Green_next = 8'hAB;
+                                Blue_next = 8'h45;
+                            end
+                            12: begin 
+                                Red_next = 8'ha0;
+                                Green_next = 8'h61;
+                                Blue_next = 8'h1f;
+                            end
+                            13: begin 
+                                Red_next = 8'h09;
+                                Green_next = 8'h64;
+                                Blue_next = 8'hc8;
+                            end
+                            14: begin 
+                                Red_next = 8'hfb;
+                                Green_next = 8'hfe;
+                                Blue_next = 8'hf2;
+                            end
+                            15: begin 
+                                Red_next = 8'h39;
+                                Green_next = 8'h40;
+                                Blue_next = 8'h3a;
+                            end
+                        endcase
+                    end
+                    else if(DrawY < 330) begin 
+                        case (lotion1_color_out)
+                            2: begin 
+                                Red_next = 8'h3C;
+                                Green_next = 8'hAB;
+                                Blue_next = 8'hDD;
+                            end
+                            3: begin 
+                                Red_next = 8'h93;
+                                Green_next = 8'hCF;
+                                Blue_next = 8'h81;
+                            end
+                            4: begin 
+                                Red_next = 8'h98;
+                                Green_next = 8'hE7;
+                                Blue_next = 8'hD8;
+                            end
+                            5: begin 
+                                Red_next = 8'h37;
+                                Green_next = 8'hE2;
+                                Blue_next = 8'hD5;
+                            end
+                            6: begin 
+                                Red_next = 8'h22;
+                                Green_next = 8'hBB;
+                                Blue_next = 8'hE6;
+                            end
+                            7: begin 
+                                Red_next = 8'hfc;
+                                Green_next = 8'hc6;
+                                Blue_next = 8'h56;
+                            end
+                            8: begin 
+                                Red_next = 8'ha8;
+                                Green_next = 8'h7C;
+                                Blue_next = 8'h07;
+                            end
+                            9: begin 
+                                Red_next = 8'hcb;
+                                Green_next = 8'h8C;
+                                Blue_next = 8'h1A;
+                            end
+                            10: begin 
+                                Red_next = 8'hE7;
+                                Green_next = 8'h89;
+                                Blue_next = 8'h24;
+                            end
+                            11: begin 
+                                Red_next = 8'hf2;
+                                Green_next = 8'hAB;
+                                Blue_next = 8'h45;
+                            end
+                            12: begin 
+                                Red_next = 8'ha0;
+                                Green_next = 8'h61;
+                                Blue_next = 8'h1f;
+                            end
+                            13: begin 
+                                Red_next = 8'h09;
+                                Green_next = 8'h64;
+                                Blue_next = 8'hc8;
+                            end
+                            14: begin 
+                                Red_next = 8'hfb;
+                                Green_next = 8'hfe;
+                                Blue_next = 8'hf2;
+                            end
+                            15: begin 
+                                Red_next = 8'h39;
+                                Green_next = 8'h40;
+                                Blue_next = 8'h3a;
+                            end
+                        endcase
+                    end
+                    else if(DrawY < 480) begin 
+                        case (number2_color_out)
+                            2: begin 
+                                Red_next = 8'h3C;
+                                Green_next = 8'hAB;
+                                Blue_next = 8'hDD;
+                            end
+                            3: begin 
+                                Red_next = 8'h93;
+                                Green_next = 8'hCF;
+                                Blue_next = 8'h81;
+                            end
+                            4: begin 
+                                Red_next = 8'h98;
+                                Green_next = 8'hE7;
+                                Blue_next = 8'hD8;
+                            end
+                            5: begin 
+                                Red_next = 8'h37;
+                                Green_next = 8'hE2;
+                                Blue_next = 8'hD5;
+                            end
+                            6: begin 
+                                Red_next = 8'h22;
+                                Green_next = 8'hBB;
+                                Blue_next = 8'hE6;
+                            end
+                            7: begin 
+                                Red_next = 8'hfc;
+                                Green_next = 8'hc6;
+                                Blue_next = 8'h56;
+                            end
+                            8: begin 
+                                Red_next = 8'ha8;
+                                Green_next = 8'h7C;
+                                Blue_next = 8'h07;
+                            end
+                            9: begin 
+                                Red_next = 8'hcb;
+                                Green_next = 8'h8C;
+                                Blue_next = 8'h1A;
+                            end
+                            10: begin 
+                                Red_next = 8'hE7;
+                                Green_next = 8'h89;
+                                Blue_next = 8'h24;
+                            end
+                            11: begin 
+                                Red_next = 8'hf2;
+                                Green_next = 8'hAB;
+                                Blue_next = 8'h45;
+                            end
+                            12: begin 
+                                Red_next = 8'ha0;
+                                Green_next = 8'h61;
+                                Blue_next = 8'h1f;
+                            end
+                            13: begin 
+                                Red_next = 8'h09;
+                                Green_next = 8'h64;
+                                Blue_next = 8'hc8;
+                            end
+                            14: begin 
+                                Red_next = 8'hfb;
+                                Green_next = 8'hfe;
+                                Blue_next = 8'hf2;
+                            end
+                            15: begin 
+                                Red_next = 8'h39;
+                                Green_next = 8'h40;
+                                Blue_next = 8'h3a;
+                            end
+                        endcase
+                    end
                 end
 
                 else if (DrawX > 560) begin 
-                    Red_next = 8'haa;
-                    Green_next = 8'hea;
-                    Blue_next = 8'h66;
+                    if(DrawY < 80) begin 
+                        case (p2_icon_color_out)
+                            2: begin 
+                                Red_next = 8'h3C;
+                                Green_next = 8'hAB;
+                                Blue_next = 8'hDD;
+                            end
+                            3: begin 
+                                Red_next = 8'h93;
+                                Green_next = 8'hCF;
+                                Blue_next = 8'h81;
+                            end
+                            4: begin 
+                                Red_next = 8'h98;
+                                Green_next = 8'hE7;
+                                Blue_next = 8'hD8;
+                            end
+                            5: begin 
+                                Red_next = 8'h37;
+                                Green_next = 8'hE2;
+                                Blue_next = 8'hD5;
+                            end
+                            6: begin 
+                                Red_next = 8'h22;
+                                Green_next = 8'hBB;
+                                Blue_next = 8'hE6;
+                            end
+                            7: begin 
+                                Red_next = 8'hfc;
+                                Green_next = 8'hc6;
+                                Blue_next = 8'h56;
+                            end
+                            8: begin 
+                                Red_next = 8'ha8;
+                                Green_next = 8'h7C;
+                                Blue_next = 8'h07;
+                            end
+                            9: begin 
+                                Red_next = 8'hcb;
+                                Green_next = 8'h8C;
+                                Blue_next = 8'h1A;
+                            end
+                            10: begin 
+                                Red_next = 8'hE7;
+                                Green_next = 8'h89;
+                                Blue_next = 8'h24;
+                            end
+                            11: begin 
+                                Red_next = 8'hf2;
+                                Green_next = 8'hAB;
+                                Blue_next = 8'h45;
+                            end
+                            12: begin 
+                                Red_next = 8'ha0;
+                                Green_next = 8'h61;
+                                Blue_next = 8'h1f;
+                            end
+                            13: begin 
+                                Red_next = 8'h09;
+                                Green_next = 8'h64;
+                                Blue_next = 8'hc8;
+                            end
+                            14: begin 
+                                Red_next = 8'hfb;
+                                Green_next = 8'hfe;
+                                Blue_next = 8'hf2;
+                            end
+                            15: begin 
+                                Red_next = 8'h39;
+                                Green_next = 8'h40;
+                                Blue_next = 8'h3a;
+                            end
+                        endcase // color_out
+                    end
+                    else if(DrawY < 130) begin 
+                        case (addbomb2_color_out)
+                            2: begin 
+                                Red_next = 8'h3C;
+                                Green_next = 8'hAB;
+                                Blue_next = 8'hDD;
+                            end
+                            3: begin 
+                                Red_next = 8'h93;
+                                Green_next = 8'hCF;
+                                Blue_next = 8'h81;
+                            end
+                            4: begin 
+                                Red_next = 8'h98;
+                                Green_next = 8'hE7;
+                                Blue_next = 8'hD8;
+                            end
+                            5: begin 
+                                Red_next = 8'h37;
+                                Green_next = 8'hE2;
+                                Blue_next = 8'hD5;
+                            end
+                            6: begin 
+                                Red_next = 8'h22;
+                                Green_next = 8'hBB;
+                                Blue_next = 8'hE6;
+                            end
+                            7: begin 
+                                Red_next = 8'hfc;
+                                Green_next = 8'hc6;
+                                Blue_next = 8'h56;
+                            end
+                            8: begin 
+                                Red_next = 8'ha8;
+                                Green_next = 8'h7C;
+                                Blue_next = 8'h07;
+                            end
+                            9: begin 
+                                Red_next = 8'hcb;
+                                Green_next = 8'h8C;
+                                Blue_next = 8'h1A;
+                            end
+                            10: begin 
+                                Red_next = 8'hE7;
+                                Green_next = 8'h89;
+                                Blue_next = 8'h24;
+                            end
+                            11: begin 
+                                Red_next = 8'hf2;
+                                Green_next = 8'hAB;
+                                Blue_next = 8'h45;
+                            end
+                            12: begin 
+                                Red_next = 8'ha0;
+                                Green_next = 8'h61;
+                                Blue_next = 8'h1f;
+                            end
+                            13: begin 
+                                Red_next = 8'h09;
+                                Green_next = 8'h64;
+                                Blue_next = 8'hc8;
+                            end
+                            14: begin 
+                                Red_next = 8'hfb;
+                                Green_next = 8'hfe;
+                                Blue_next = 8'hf2;
+                            end
+                            15: begin 
+                                Red_next = 8'h39;
+                                Green_next = 8'h40;
+                                Blue_next = 8'h3a;
+                            end
+                        endcase // color_out
+                    end
+                    else if(DrawY < 280) begin 
+                        case (number3_color_out)
+                            2: begin 
+                                Red_next = 8'h3C;
+                                Green_next = 8'hAB;
+                                Blue_next = 8'hDD;
+                            end
+                            3: begin 
+                                Red_next = 8'h93;
+                                Green_next = 8'hCF;
+                                Blue_next = 8'h81;
+                            end
+                            4: begin 
+                                Red_next = 8'h98;
+                                Green_next = 8'hE7;
+                                Blue_next = 8'hD8;
+                            end
+                            5: begin 
+                                Red_next = 8'h37;
+                                Green_next = 8'hE2;
+                                Blue_next = 8'hD5;
+                            end
+                            6: begin 
+                                Red_next = 8'h22;
+                                Green_next = 8'hBB;
+                                Blue_next = 8'hE6;
+                            end
+                            7: begin 
+                                Red_next = 8'hfc;
+                                Green_next = 8'hc6;
+                                Blue_next = 8'h56;
+                            end
+                            8: begin 
+                                Red_next = 8'ha8;
+                                Green_next = 8'h7C;
+                                Blue_next = 8'h07;
+                            end
+                            9: begin 
+                                Red_next = 8'hcb;
+                                Green_next = 8'h8C;
+                                Blue_next = 8'h1A;
+                            end
+                            10: begin 
+                                Red_next = 8'hE7;
+                                Green_next = 8'h89;
+                                Blue_next = 8'h24;
+                            end
+                            11: begin 
+                                Red_next = 8'hf2;
+                                Green_next = 8'hAB;
+                                Blue_next = 8'h45;
+                            end
+                            12: begin 
+                                Red_next = 8'ha0;
+                                Green_next = 8'h61;
+                                Blue_next = 8'h1f;
+                            end
+                            13: begin 
+                                Red_next = 8'h09;
+                                Green_next = 8'h64;
+                                Blue_next = 8'hc8;
+                            end
+                            14: begin 
+                                Red_next = 8'hfb;
+                                Green_next = 8'hfe;
+                                Blue_next = 8'hf2;
+                            end
+                            15: begin 
+                                Red_next = 8'h39;
+                                Green_next = 8'h40;
+                                Blue_next = 8'h3a;
+                            end
+                        endcase
+                    end
+                    else if(DrawY < 330) begin 
+                        case (lotion2_color_out)
+                            2: begin 
+                                Red_next = 8'h3C;
+                                Green_next = 8'hAB;
+                                Blue_next = 8'hDD;
+                            end
+                            3: begin 
+                                Red_next = 8'h93;
+                                Green_next = 8'hCF;
+                                Blue_next = 8'h81;
+                            end
+                            4: begin 
+                                Red_next = 8'h98;
+                                Green_next = 8'hE7;
+                                Blue_next = 8'hD8;
+                            end
+                            5: begin 
+                                Red_next = 8'h37;
+                                Green_next = 8'hE2;
+                                Blue_next = 8'hD5;
+                            end
+                            6: begin 
+                                Red_next = 8'h22;
+                                Green_next = 8'hBB;
+                                Blue_next = 8'hE6;
+                            end
+                            7: begin 
+                                Red_next = 8'hfc;
+                                Green_next = 8'hc6;
+                                Blue_next = 8'h56;
+                            end
+                            8: begin 
+                                Red_next = 8'ha8;
+                                Green_next = 8'h7C;
+                                Blue_next = 8'h07;
+                            end
+                            9: begin 
+                                Red_next = 8'hcb;
+                                Green_next = 8'h8C;
+                                Blue_next = 8'h1A;
+                            end
+                            10: begin 
+                                Red_next = 8'hE7;
+                                Green_next = 8'h89;
+                                Blue_next = 8'h24;
+                            end
+                            11: begin 
+                                Red_next = 8'hf2;
+                                Green_next = 8'hAB;
+                                Blue_next = 8'h45;
+                            end
+                            12: begin 
+                                Red_next = 8'ha0;
+                                Green_next = 8'h61;
+                                Blue_next = 8'h1f;
+                            end
+                            13: begin 
+                                Red_next = 8'h09;
+                                Green_next = 8'h64;
+                                Blue_next = 8'hc8;
+                            end
+                            14: begin 
+                                Red_next = 8'hfb;
+                                Green_next = 8'hfe;
+                                Blue_next = 8'hf2;
+                            end
+                            15: begin 
+                                Red_next = 8'h39;
+                                Green_next = 8'h40;
+                                Blue_next = 8'h3a;
+                            end
+                        endcase
+                    end
+                    else if(DrawY < 480) begin 
+                        case (number4_color_out)
+                            2: begin 
+                                Red_next = 8'h3C;
+                                Green_next = 8'hAB;
+                                Blue_next = 8'hDD;
+                            end
+                            3: begin 
+                                Red_next = 8'h93;
+                                Green_next = 8'hCF;
+                                Blue_next = 8'h81;
+                            end
+                            4: begin 
+                                Red_next = 8'h98;
+                                Green_next = 8'hE7;
+                                Blue_next = 8'hD8;
+                            end
+                            5: begin 
+                                Red_next = 8'h37;
+                                Green_next = 8'hE2;
+                                Blue_next = 8'hD5;
+                            end
+                            6: begin 
+                                Red_next = 8'h22;
+                                Green_next = 8'hBB;
+                                Blue_next = 8'hE6;
+                            end
+                            7: begin 
+                                Red_next = 8'hfc;
+                                Green_next = 8'hc6;
+                                Blue_next = 8'h56;
+                            end
+                            8: begin 
+                                Red_next = 8'ha8;
+                                Green_next = 8'h7C;
+                                Blue_next = 8'h07;
+                            end
+                            9: begin 
+                                Red_next = 8'hcb;
+                                Green_next = 8'h8C;
+                                Blue_next = 8'h1A;
+                            end
+                            10: begin 
+                                Red_next = 8'hE7;
+                                Green_next = 8'h89;
+                                Blue_next = 8'h24;
+                            end
+                            11: begin 
+                                Red_next = 8'hf2;
+                                Green_next = 8'hAB;
+                                Blue_next = 8'h45;
+                            end
+                            12: begin 
+                                Red_next = 8'ha0;
+                                Green_next = 8'h61;
+                                Blue_next = 8'h1f;
+                            end
+                            13: begin 
+                                Red_next = 8'h09;
+                                Green_next = 8'h64;
+                                Blue_next = 8'hc8;
+                            end
+                            14: begin 
+                                Red_next = 8'hfb;
+                                Green_next = 8'hfe;
+                                Blue_next = 8'hf2;
+                            end
+                            15: begin 
+                                Red_next = 8'h39;
+                                Green_next = 8'h40;
+                                Blue_next = 8'h3a;
+                            end
+                        endcase
+                    end
                 end          
 
                 else begin
