@@ -3,26 +3,30 @@ module Picture_Output(
 	input reset,
 	input [2:0] gadget_grid [0:255],
 	input [2:0] bomb_grid [0:255],
-	input [1:0] wall_grid [0:255],
+	input [2:0] wall_grid [0:255],
 	output [3:0] occ_grid [0:255]
 );
 	// occ_grid
-	parameter OCC_NONE 		= 5'd0;
-	parameter OCC_LOTION 	= 5'd1; // sth that can add bomb length
-	parameter OCC_BOMB 		= 5'd2; // unxploded bomb
-	parameter OCC_ADD_BOMB 	= 5'd3; // thing that can add bomb capacity
-	parameter OCC_CEN 		= 5'd4;  // the center of the explosion 
-	parameter OCC_UP 		= 5'd5;  
-	parameter OCC_DOWN 		= 5'd6;  
-	parameter OCC_LEFT 		= 5'd7;
-	parameter OCC_RIGHT 	= 5'd8;
-	parameter OCC_WALL_ABLE = 5'd9;
-	parameter OCC_WALL_UN 	= 5'd10;
+	parameter OCC_NONE 			= 5'd0;
+	parameter OCC_LOTION 		= 5'd1; // sth that can add bomb length
+	parameter OCC_BOMB 			= 5'd2; // unxploded bomb
+	parameter OCC_ADD_BOMB 		= 5'd3; // thing that can add bomb capacity
+	parameter OCC_CEN 			= 5'd4;  // the center of the explosion 
+	parameter OCC_UP 			= 5'd5;  
+	parameter OCC_DOWN 			= 5'd6;  
+	parameter OCC_LEFT 			= 5'd7;
+	parameter OCC_RIGHT 		= 5'd8;
+	parameter OCC_WALL_ABLE_1 	= 5'd9;
+	parameter OCC_WALL_ABLE_2 	= 5'd10;
+	parameter OCC_WALL_UN_1		= 5'd11;
+	parameter OCC_WALL_UN_2		= 5'd12;
 
 	// wall_grid
-	parameter EMPTY_WALL	= 2'd0;
-	parameter ABLE_WALL 	= 2'd1;
-	parameter UN_WALL 		= 2'd2;
+	parameter EMPTY_WALL	= 3'd0;
+	parameter ABLE_WALL_1 	= 3'd1;
+	parameter ABLE_WALL_2	= 3'd2;
+	parameter UN_WALL_1		= 3'd3;
+	parameter UN_WALL_2		= 3'd4;	
 
 	// gadget_grid
 	parameter EMPTY_G 			= 3'd0;
@@ -73,12 +77,21 @@ module Picture_Output(
 				begin 
 					if(gadget_grid[i] == LOTION) occ_grid_next[i] = OCC_LOTION;
 					else if(gadget_grid[i] == ADD_BOMB) occ_grid_next[i] = OCC_ADD_BOMB;
-					if(wall_grid[i] == ABLE_WALL) occ_grid_next[i] = OCC_WALL_ABLE;
-					else if(wall_grid[i] == UN_WALL) occ_grid_next[i] = OCC_WALL_UN;
+					if(wall_grid[i] == ABLE_WALL_1 || wall_grid[i] == ABLE_WALL_2) begin 
+						if(wall_grid[i] == ABLE_WALL_1) occ_grid_next[i] = OCC_WALL_ABLE_1;
+						else occ_grid_next[i] = OCC_WALL_ABLE_2;
+					end 
+					else if(wall_grid[i] == UN_WALL_1 || wall_grid[i] == UN_WALL_2) begin 
+						if(wall_grid[i] == UN_WALL_1 ) occ_grid_next[i] = OCC_WALL_UN_1;
+						else if(wall_grid[i] == UN_WALL_2) occ_grid_next[i] = OCC_WALL_UN_2;
+					end 
 					if(wall_grid[i] == EMPTY_WALL && gadget_grid[i] == EMPTY_G) occ_grid_next[i] = OCC_NONE;
 				end
 			endcase // bomb_grid[i]
-			if(wall_grid[i] == UN_WALL) occ_grid_next[i] = OCC_WALL_UN;
+			if(wall_grid[i] == UN_WALL_1 || wall_grid[i] == UN_WALL_2) begin 
+				if(wall_grid[i] == UN_WALL_1 ) occ_grid_next[i] = OCC_WALL_UN_1;
+				else if(wall_grid[i] == UN_WALL_2) occ_grid_next[i] = OCC_WALL_UN_2;
+			end 
 		end
 	end
 

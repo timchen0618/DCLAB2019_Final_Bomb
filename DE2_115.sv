@@ -143,6 +143,7 @@ module DE2_115(
 	logic clock_vga, clock_vga_next;
 	logic [3:0] p1_tile_x, p2_tile_x ,p1_tile_y, p2_tile_y;
 	logic [1:0] p1_direction, p2_direction;
+	logic Start;
 
 	assign p1_tile_x = 4'd0;
 	assign p2_tile_x = 4'd0;
@@ -185,7 +186,7 @@ module DE2_115(
 	logic clk3000;
 	logic clk_30;
 	//logic game_over;
-
+	logic [2:0] state_dis;
 	ps2_controller ps21(
 		.clk(clk_30),
 		.rst(SW[0]),
@@ -201,7 +202,10 @@ module DE2_115(
 		.out1(out1_rx),		
 		.out2(out2_rx),		
 		.out3(out3_rx),		
-		.out4(out4_rx)		
+		.out4(out4_rx),
+		.start(Start),
+		.state_o(state_dis),
+		.begin_(Beginnnn)		
 	);
 
 	//wire [255:0] wall;
@@ -234,10 +238,16 @@ module DE2_115(
 	logic bomb_valid1_display;
 	logic [8:0] next_cor;
 	logic [3:0] out1_rx, out2_rx, out3_rx, out4_rx;
+	// logic start_out_ps2;
+
+	logic Begin;
+	logic Beginnnn;
+	logic [1:0] option_ctr;
 
 	ps2_rx ps2_rx1
 	(
 		.clk(CLOCK_50),
+		// .rst(SW[0]),
 		.reset(SW[0]),
 		.ps2d(PS2_DAT),
 		.ps2c(PS2_CLK),
@@ -250,6 +260,7 @@ module DE2_115(
 	controller controller1
 	(
 		.clk(clk_30),
+		// .rst(SW[0]),
 		.rst(SW[0]),
 		.direction_1(dir1),
 		.direction_2(dir2),
@@ -280,7 +291,8 @@ module DE2_115(
 		.in_valid_1_dis(in_valid_1_display),
 		.in_valid_2_dis(in_valid_2_display),
 		.p1_coordinate_next_o(next_cor),
-		.bomb_valid1_o(bomb_valid1_display)
+		.bomb_valid1_o(bomb_valid1_display),
+		.i_start(Beginnnn)
 
 	);
 
@@ -301,44 +313,24 @@ module DE2_115(
 	.rst(SW[0]),  // Asynchronous reset active low
 	.clk_o(clk_6)
 	);
-	// assign LEDG[0] = p1_set_o;
-	// assign LEDG[1] = p2_set_o;
 
-	// assign LEDR[0] = p1_x_o[0];
-	// assign LEDR[1] = p1_x_o[1];
-	// assign LEDR[2] = p1_x_o[2];
-	// assign LEDR[3] = p1_x_o[3];
-	// assign LEDR[4] = p1_y_o[0];
-	// assign LEDR[5] = p1_y_o[1];
-	// assign LEDR[6] = p1_y_o[2];
-	// assign LEDR[7] = p1_y_o[3];
+	option option1(
+    .clk(clk_30), 
+    .rst(SW[0]),
+    .i_start(Start), 
+    .direction_1(dir1),	// key pressed
+	.direction_2(dir2),	// key pressed
+    .in_valid_1(data_valid1),
+	.in_valid_2(data_valid2),
+    .opt_ctr(option_ctr),
+    .select(Begin)
+	);
 	
 	assign LEDR[8] = rx_suc;
 	assign LEDG[8] = data_valid1;
+	assign LEDR[16] = Beginnnn;
 
-	// SevenHexDecoder seven_dec0(
-	// 	.i_hex(p1_x_o),
-	// 	.o_seven_ten(HEX1),
-	// 	.o_seven_one(HEX0)
-	// );
-
-	// SevenHexDecoder seven_dec1(
-	// 	.i_hex(p1_y_o),
-	// 	.o_seven_ten(HEX3),
-	// 	.o_seven_one(HEX2)
-	// );
-
-	// SevenHexDecoder seven_dec2(
-	// 	.i_hex(bomb_num_display),
-	// 	.o_seven_ten(HEX5),
-	// 	.o_seven_one(HEX4)
-	// );
-
-	// SevenHexDecoder seven_dec3(
-	// 	.i_hex(dir1_display),
-	// 	.o_seven_ten(HEX7),
-	// 	.o_seven_one(HEX6)
-	// );
+	
 	//#################################################################//
 	logic [2:0] bomb_display1;
 	logic bomb_display2;
@@ -348,7 +340,7 @@ module DE2_115(
 	logic [3:0] bomb_p1_o;
 	logic p2_able;
 	logic [3:0] p1_put_ctr_display;
-	logic [1:0] game_state;
+	logic [2:0] game_state;
 	logic [255:0] bomb_wall;
 
 	Picture_Output picture_output(
@@ -398,15 +390,19 @@ module DE2_115(
 
 	Wall Wall(
 		.clk(clk_30),    // Clock
-		.rst(SW[0]),  // Asynchronous reset active low
+		.start(Beginnnn),  // Asynchronous reset active low
+		.rst(SW[0]),
 		.i_explode(explode),
-	 	.o_wall_grid(wall_grid)
+		.wall_type(option_ctr),
+	 	.wall_grid(wall_grid)
 	 	//.o_wall(wall) 
 		);
 
 	Gadget gadget(
 		.clk(clk_30),
+		.start(Beginnnn),
 		.rst(SW[0]),
+		.gadget_type(option_ctr),
 		.p1_cor(p1_cor),
 		.p2_cor(p2_cor),
 		.i_explode(explode),
@@ -420,7 +416,7 @@ module DE2_115(
 		.o_p2_len(p2_bomb_len),
 
 	//output to display
-		.o_gadget_state_grid(gadget_grid),
+		.gadget_grid(gadget_grid),
 
 	//output for debug 
 		.p2_able_to_add_bomb(p2_able)
@@ -433,8 +429,9 @@ module DE2_115(
 		.p1_cor(p1_cor),
 		.p2_cor(p2_cor),
 		//state
-		.gameover_state(game_state)
-
+		.gameover_state(game_state),
+		.Start(Start),
+		.Begin(Begin)
 		); 
 	
 	color_mapper  color_mapper ( 
@@ -450,11 +447,14 @@ module DE2_115(
         .VGA_R(vga_r),
         .VGA_G(vga_g), 
         .VGA_B(vga_b),
-        .gameStatus(game_state) 
+        .gameStatus(game_state), 
         .o_p1_cap(p1_bomb_cap), 
         .o_p2_cap(p2_bomb_cap),
         .o_p1_len(p1_bomb_len), 
-        .o_p2_len(p2_bomb_len)
+        .o_p2_len(p2_bomb_len),
+        .option_ctr(option_ctr),
+        .Begin_i(Begin),
+        .Beginnnn_o(Beginnnn)
     );
 
     VGA_controller vga_controller(
@@ -494,7 +494,7 @@ module DE2_115(
 	// );
 
 	SevenHexDecoder seven_dec0(
-		.i_hex(p1_bomb_cap),
+		.i_hex(state_dis),
 		.o_seven_ten(HEX1),
 		.o_seven_one(HEX0)
 	);
@@ -512,7 +512,7 @@ module DE2_115(
 	);
 
 	SevenHexDecoder seven_dec3(
-		.i_hex(bomb_num_2_in),
+		.i_hex(option_ctr),
 		.o_seven_ten(HEX7),
 		.o_seven_one(HEX6)
 	);

@@ -7,7 +7,7 @@ module bomb(
 	input [7:0] p1_cor, p2_cor,
 	input p1_put, 
 	input p2_put,
-	input [1:0] wall_grid [0:255],
+	input [2:0] wall_grid [0:255],
 	output logic [2:0] bomb_tile [0:255],
 	output logic [255:0] explode,
 	output [2:0] bomb_num_p1,
@@ -36,16 +36,9 @@ parameter EXP_CEN	 	= 3'd7;
 parameter P1 	= 1'b0;
 parameter P2 	= 1'b1;
 
-// game status
-parameter NOT_OVER 	= 2'd0;
-parameter GAME_OVER = 2'd1;
-parameter P1_WIN 	= 2'd2;
-parameter P2_WIN 	= 2'd3; 
-
 // WALL
-parameter EMPTY_WALL = 2'd0;
-parameter ABLE_WALL = 2'd1;
-parameter UNABLE_WALL = 2'd2;
+parameter EMPTY_WALL = 3'd0;
+
 
 // integers
 integer ii, i, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, i12, i13, i14;

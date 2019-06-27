@@ -16,8 +16,10 @@ module  backgroundROM
     parameter OCC_DOWN = 5'd6;  
     parameter OCC_LEFT = 5'd7;
     parameter OCC_RIGHT = 5'd8;
-    parameter OCC_WALL_ABLE = 5'd9;
-    parameter OCC_WALL_UN = 5'd10;
+    parameter OCC_WALL_ABLE_1   = 5'd9;
+    parameter OCC_WALL_ABLE_2   = 5'd10;
+    parameter OCC_WALL_UN_1     = 5'd11;
+    parameter OCC_WALL_UN_2     = 5'd12;
 
 // mem has width of 3 bits and a total of 400 addresses
 logic [3:0] mem0 [0:899];
@@ -31,6 +33,8 @@ logic [3:0] mem7 [0:899];
 logic [3:0] mem8 [0:899];
 logic [3:0] mem9 [0:899];
 logic [3:0] mem10 [0:899];
+logic [3:0] mem11 [0:899];
+logic [3:0] mem12 [0:899];
 
 
 
@@ -46,8 +50,9 @@ begin
     $readmemh("./PNG To Hex/On-Chip Memory/sprite_bytes/waterleft.txt", mem7);
     $readmemh("./PNG To Hex/On-Chip Memory/sprite_bytes/waterright.txt", mem8);
     $readmemh("./PNG To Hex/On-Chip Memory/sprite_bytes/yellow.txt", mem9);
-    $readmemh("./PNG To Hex/On-Chip Memory/sprite_bytes/orange.txt", mem10);    
-     
+    $readmemh("./PNG To Hex/On-Chip Memory/sprite_bytes/able_wall_2.txt", mem10);    
+    $readmemh("./PNG To Hex/On-Chip Memory/sprite_bytes/orange.txt", mem11);    
+    $readmemh("./PNG To Hex/On-Chip Memory/sprite_bytes/unable_wall_2.txt", mem12);     
 end
 
 
@@ -64,8 +69,10 @@ begin
         OCC_DOWN: data_Out<= mem6[read_address];
         OCC_LEFT: data_Out<= mem7[read_address]; 
         OCC_RIGHT: data_Out<= mem8[read_address]; 
-        OCC_WALL_ABLE: data_Out<= mem9[read_address]; 
-        OCC_WALL_UN: data_Out<= mem10[read_address];
+        OCC_WALL_ABLE_1: data_Out<= mem9[read_address]; 
+        OCC_WALL_ABLE_2: data_Out<= mem10[read_address];
+        OCC_WALL_UN_1: data_Out<= mem11[read_address]; 
+        OCC_WALL_UN_2: data_Out<= mem12[read_address];
     endcase // state
 end
 

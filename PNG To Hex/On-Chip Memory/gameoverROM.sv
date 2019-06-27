@@ -1,6 +1,6 @@
 module  gameoverROM
 (       input clk,
-        input logic [16:0] read_address,
+        input logic [18:0] read_address,
 		output logic [3:0] data_Out
 );
 
