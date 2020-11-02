@@ -2,4 +2,3 @@
 
 Final is Fun!!
 
-What the FUCK!!!!
